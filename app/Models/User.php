@@ -18,8 +18,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Maggomann\FilamentModelTranslator\Traits\HasTranslateableModel;
 use Plank\Mediable\Mediable;
 use Plank\Mediable\MediableInterface;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Tags\HasTags;
 
 class User extends Authenticatable implements BannableContract, MediableInterface, Wallet, WalletFloat
@@ -46,7 +46,7 @@ class User extends Authenticatable implements BannableContract, MediableInterfac
         return LogOptions::defaults()
             ->logAll()
             ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
+            ->dontLogEmptyChanges();
     }
 
     /**
