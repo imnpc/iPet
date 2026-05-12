@@ -8,7 +8,7 @@
     "require": {
         "php": "^8.4",
         "amidesfahani/filament-tinyeditor": "^4.0",
-        "bavix/laravel-wallet": "^11.4",
+        "bavix/laravel-wallet": "^12.0",
         "bezhansalleh/filament-language-switch": "^4.1",
         "bezhansalleh/filament-shield": "^4.0",
         "codewithdennis/filament-lucide-icons": "^4.0",
