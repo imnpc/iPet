@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\WalletType;
+use Bavix\Wallet\Enums\TransactionType;
 use Bavix\Wallet\Internal\Exceptions\ExceptionInterface;
 use Bavix\Wallet\Internal\Service\MathServiceInterface;
 use Bavix\Wallet\Models\Transaction;
@@ -121,7 +122,7 @@ class UserWalletService
     {
         $wallet = $this->resolveWalletByUserAndType($uid, $wallet_type_id); // 获取用户指定钱包
         $amount = $wallet->transactions()
-            ->where('type', '=', Transaction::TYPE_DEPOSIT)
+            ->where('type', '=', TransactionType::Deposit->value)
             ->whereDate('created_at', '=', Carbon::yesterday())
             ->sum('amount'); // 昨日增加金额
 
@@ -138,7 +139,7 @@ class UserWalletService
     {
         $wallet = $this->resolveWalletByUserAndType($uid, $wallet_type_id); // 获取用户指定钱包
         $amount = $wallet->transactions()
-            ->where('type', '=', Transaction::TYPE_DEPOSIT)
+            ->where('type', '=', TransactionType::Deposit->value)
             ->sum('amount'); // 累计收入
 
         return $this->formatAmountByWallet($wallet, $amount);
@@ -188,7 +189,7 @@ class UserWalletService
             ->all();
 
         $amount = Transaction::query()
-            ->where('type', '=', Transaction::TYPE_DEPOSIT)
+            ->where('type', '=', TransactionType::Deposit->value)
             ->whereIn('wallet_id', $walletIds)
             ->sum('amount'); // 指定类型钱包累计收入
 

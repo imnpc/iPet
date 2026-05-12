@@ -5,7 +5,7 @@ namespace Tests\Feature\Services;
 use App\Models\User;
 use App\Models\WalletType;
 use App\Services\UserWalletService;
-use Bavix\Wallet\Models\Transaction;
+use Bavix\Wallet\Enums\TransactionType;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -77,7 +77,7 @@ class UserWalletServiceTest extends TestCase
         $service->store($user->id, $walletType->id, -4);
         $wallet = $user->getWallet($walletType->slug);
         $firstDeposit = $wallet->transactions()
-            ->where('type', '=', Transaction::TYPE_DEPOSIT)
+            ->where('type', '=', TransactionType::Deposit->value)
             ->orderBy('id')
             ->firstOrFail();
         $firstDeposit->forceFill([
