@@ -35,7 +35,7 @@
                 <form action="{{ route('posts.like', $post) }}" method="POST" class="flex" onclick="event.stopPropagation()">
                     @csrf
                     <input type="hidden" name="return_to" value="{{ request()->fullUrl() }}">
-                    <button type="submit" @disabled($isLiked) class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg py-2 transition-colors {{ $isLiked ? 'text-rose-500' : 'text-warm-500 hover:bg-warm-50 hover:text-rose-500' }}">
+                    <button type="submit" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg py-2 transition-colors {{ $isLiked ? 'text-rose-500 hover:bg-rose-50' : 'text-warm-500 hover:bg-warm-50 hover:text-rose-500' }}">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 8.25c0-2.485-2.236-4.5-4.995-4.5A5.266 5.266 0 0012 5.67a5.266 5.266 0 00-4.005-1.92C5.236 3.75 3 5.765 3 8.25c0 7.22 9 11.25 9 11.25s9-4.03 9-11.25z"></path></svg>
                         <span>{{ $post->like_count }}</span>
                     </button>
@@ -69,11 +69,11 @@
                 <form action="{{ route('posts.like', $post) }}" method="POST" @class(['ml-auto' => $alignEnd])>
                     @csrf
                     <input type="hidden" name="return_to" value="{{ request()->fullUrl() }}">
-                    <button type="submit" @disabled($isLiked) @class([
+                    <button type="submit" @class([
                         'inline-flex items-center rounded-full transition-colors',
                         $gapClass,
                         $paddingClass,
-                        'bg-rose-100 text-rose-600 cursor-not-allowed' => $isLiked,
+                        'bg-rose-100 text-rose-600 hover:bg-rose-200' => $isLiked,
                         'bg-rose-50 text-rose-500 hover:bg-rose-100' => ! $isLiked,
                     ])>
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 8.25c0-2.485-2.236-4.5-4.995-4.5A5.266 5.266 0 0012 5.67a5.266 5.266 0 00-4.005-1.92C5.236 3.75 3 5.765 3 8.25c0 7.22 9 11.25 9 11.25s9-4.03 9-11.25z"></path></svg>

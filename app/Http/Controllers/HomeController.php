@@ -346,38 +346,50 @@ class HomeController extends Controller
 
     public function postLike(Request $request, Post $post)
     {
-        $like = $post->likes()->firstOrCreate([
+        $like = $post->likes()->where([
             'user_id' => $request->user()->id,
-        ], [
+        ])->first();
+
+        if ($like) {
+            $like->delete();
+            $post->decrement('like_count');
+
+            return redirect()->to($request->input('return_to', url()->previous()))->with('success', '已取消点赞');
+        }
+
+        $post->likes()->create([
+            'user_id' => $request->user()->id,
             'created_at' => now(),
         ]);
 
-        if ($like->wasRecentlyCreated) {
-            $post->increment('like_count');
+        $post->increment('like_count');
 
-            return redirect()->to($request->input('return_to', url()->previous()))->with('success', '点赞成功');
-        }
-
-        return redirect()->to($request->input('return_to', url()->previous()))->with('success', '你已点过赞');
+        return redirect()->to($request->input('return_to', url()->previous()))->with('success', '点赞成功');
     }
 
     public function commentLike(Request $request, Post $post, Comment $comment)
     {
         abort_unless($comment->post_id === $post->id, 404);
 
-        $like = $comment->likes()->firstOrCreate([
+        $like = $comment->likes()->where([
             'user_id' => $request->user()->id,
-        ], [
+        ])->first();
+
+        if ($like) {
+            $like->delete();
+            $comment->decrement('like_count');
+
+            return redirect()->route('posts.show', ['post' => $post, 'comment_sort' => $request->string('comment_sort')->value() ?: null])->with('success', '已取消点赞');
+        }
+
+        $comment->likes()->create([
+            'user_id' => $request->user()->id,
             'created_at' => now(),
         ]);
 
-        if ($like->wasRecentlyCreated) {
-            $comment->increment('like_count');
+        $comment->increment('like_count');
 
-            return redirect()->route('posts.show', ['post' => $post, 'comment_sort' => $request->string('comment_sort')->value() ?: null])->with('success', '点赞成功');
-        }
-
-        return redirect()->route('posts.show', ['post' => $post, 'comment_sort' => $request->string('comment_sort')->value() ?: null])->with('success', '你已点过赞');
+        return redirect()->route('posts.show', ['post' => $post, 'comment_sort' => $request->string('comment_sort')->value() ?: null])->with('success', '点赞成功');
     }
 
     public function postStore(Request $request)

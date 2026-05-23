@@ -197,7 +197,7 @@ class PostCommentWebTest extends TestCase
         ]);
     }
 
-    public function test_authenticated_user_cannot_like_same_comment_twice(): void
+    public function test_authenticated_user_can_toggle_comment_like(): void
     {
         $viewer = User::factory()->createOne();
         $author = User::factory()->createOne();
@@ -229,10 +229,10 @@ class PostCommentWebTest extends TestCase
 
         $this->assertDatabaseHas('comments', [
             'id' => $comment->id,
-            'like_count' => 1,
+            'like_count' => 0,
         ]);
 
-        $this->assertDatabaseCount('likes', 1);
+        $this->assertDatabaseCount('likes', 0);
     }
 
     public function test_post_show_can_sort_top_level_comments_by_hot(): void
@@ -326,7 +326,6 @@ class PostCommentWebTest extends TestCase
         $markup = $response->getContent();
         $this->assertIsString($markup);
         $this->assertGreaterThanOrEqual(2, substr_count($markup, '已点赞 1'));
-        $this->assertGreaterThanOrEqual(2, substr_count($markup, 'disabled'));
     }
 
     public function test_authenticated_user_can_like_post_from_post_stats_component(): void
@@ -361,7 +360,7 @@ class PostCommentWebTest extends TestCase
         ]);
     }
 
-    public function test_authenticated_user_cannot_like_same_post_twice(): void
+    public function test_authenticated_user_can_toggle_post_like(): void
     {
         $user = User::factory()->createOne();
         $author = User::factory()->createOne();
@@ -385,9 +384,9 @@ class PostCommentWebTest extends TestCase
 
         $this->assertDatabaseHas('posts', [
             'id' => $post->id,
-            'like_count' => 1,
+            'like_count' => 0,
         ]);
 
-        $this->assertDatabaseCount('likes', 1);
+        $this->assertDatabaseCount('likes', 0);
     }
 }
