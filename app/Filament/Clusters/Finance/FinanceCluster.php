@@ -43,7 +43,7 @@ class FinanceCluster extends Cluster
      */
     public static function getNavigationSort(): ?int
     {
-        return 90;
+        return 20;
     }
 
     /**

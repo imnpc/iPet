@@ -24,6 +24,7 @@ class WalletResource extends Resource implements Translateable
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-wallet';
 
+    // 集群
     protected static ?string $cluster = FinanceCluster::class;
 
     public static function table(Table $table): Table
