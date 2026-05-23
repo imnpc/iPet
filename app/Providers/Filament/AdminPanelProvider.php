@@ -4,6 +4,9 @@ namespace App\Providers\Filament;
 
 use AmidEsfahani\FilamentTinyEditor\TinyEditor;
 use App\Filament\Auth\Login;
+use App\Filament\Widgets\PetTypeChart;
+use App\Filament\Widgets\PostTrendChart;
+use App\Filament\Widgets\StatsOverview;
 use App\Http\Middleware\ForbidBannedUser;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
@@ -113,6 +116,9 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
+                StatsOverview::class,
+                PostTrendChart::class,
+                PetTypeChart::class,
                 FilamentInfoWidget::class,
             ])
             ->middleware([
@@ -179,6 +185,7 @@ class AdminPanelProvider extends PanelProvider
             // 菜单分组排序
             ->navigationGroups([
                 __('filament-model.navigation_group.role.name'),
+                __('filament-model.navigation_group.pet.name'),
                 __('filament-model.navigation_group.wallet.name'),
                 __('filament-model.navigation_group.setting.name'),
             ])

@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Users\Tables;
 
 use App\Filament\Actions\WalletAction;
+use App\Filament\Clusters\Pet\Resources\PetResource;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -18,6 +20,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Actions\ExportAction;
+use STS\FilamentImpersonate\Actions\Impersonate;
 use Widiu7omo\FilamentBandel\Actions\BanAction;
 use Widiu7omo\FilamentBandel\Actions\UnbanAction;
 use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
@@ -50,6 +53,11 @@ class UsersTable
                 ImageColumn::make('avatar_url')
                     ->label(trans('filament-model.general.avatar_url'))
                     ->circular(),
+                TextColumn::make('pets_count')
+                    ->label(trans('filament-model.attributes.user.pets_count'))
+                    ->counts('pets')
+                    ->badge()
+                    ->color('primary'),
                 IconColumn::make('status')
                     ->label(trans('filament-model.general.status'))
                     ->boolean(),
@@ -122,7 +130,22 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Impersonate::make()
+                    ->guard('web')
+                    ->redirectTo(route('home'))
+                    ->withoutSpa(),
                 WalletAction::make(),
+                Action::make('view_pets')
+                    ->label(trans('filament-model.attributes.user.view_pets'))
+                    ->icon('heroicon-o-heart')
+                    ->color('gray')
+                    ->url(fn ($record): string => PetResource::getUrl('index', [
+                        'filters' => [
+                            'user_id' => [
+                                'value' => (string) $record->getKey(),
+                            ],
+                        ],
+                    ])),
                 ActionGroup::make([
                     BanAction::make(__('filament-bandel::translations.ban_model'))->color('warning'),
                     UnbanAction::make(__('filament-bandel::translations.unban_model'))->color('success'),
