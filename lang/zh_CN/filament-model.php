@@ -201,6 +201,14 @@ return [
     */
 
     'label' => [
+        'admin' => [
+            'label' => '管理员',
+            'plural_label' => '管理员',
+        ],
+        'user' => [
+            'label' => '用户',
+            'plural_label' => '用户',
+        ],
         'activity_log' => [
             'label' => '操作日志',
             'plural_label' => '操作日志',
