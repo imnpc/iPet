@@ -143,7 +143,9 @@ class AdminPanelProvider extends PanelProvider
                     ->resourceCheckboxListColumns([
                         'default' => 1,
                         'sm' => 2,
-                    ]), // 权限
+                    ])
+                    ->navigationGroup(__('filament-model.navigation_group.role.name'))
+                    ->navigationSort(1), // 权限
                 SettingsPlugin::make()
                     ->pages([
                         //                        \App\Filament\Clusters\Settings\Pages\SystemConfig::class,
@@ -177,18 +179,13 @@ class AdminPanelProvider extends PanelProvider
             // 菜单分组排序
             ->navigationGroups([
                 __('filament-model.navigation_group.user.name'),
-                __('filament-model.navigation_group.wallet.name'),
                 __('filament-model.navigation_group.role.name'),
+                __('filament-model.navigation_group.wallet.name'),
                 __('filament-model.navigation_group.setting.name'),
             ])
 //            ->topNavigation() // 顶部导航
 //            ->topbar(false)
             ->sidebarWidth('15rem')
             ->sidebarCollapsibleOnDesktop();
-    }
-
-    public function getNavigationGroup(): ?string
-    {
-        return __('filament-shield::filament-shield.nav.group');
     }
 }

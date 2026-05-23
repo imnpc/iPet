@@ -58,7 +58,7 @@ return [
             'remark' => '备注',
             'fromUser' => '来自用户',
         ],
-        'recharge' =>[
+        'recharge' => [
             'order_sn' => '订单号',
             'user_id' => '用户ID',
             'wallet_type_id' => '钱包类型',
@@ -78,26 +78,26 @@ return [
     */
 
     'navigation_group' => [
-        'activity_log' => [
-            'name' => '日志',
-        ],
-//        'user' => [
-//            'name' => '用户',
-//        ],
-        'wallet' => [
-            'name' => '钱包',
-        ],
-        'role' => [
-            'name' => '角色',
-        ],
-        'setting' => [
-            'name' => '设置',
+        'user_permission' => [
+            'name' => '权限',
         ],
         'permission' => [
-            'name' => '角色权限',
+            'name' => '权限',
+        ],
+        'user' => [
+            'name' => '用户',
+        ],
+        'role' => [
+            'name' => '权限',
         ],
         'finance' => [
             'name' => '财务',
+        ],
+        'wallet' => [
+            'name' => '钱包',
+        ],
+        'setting' => [
+            'name' => '设置',
         ],
     ],
 
@@ -184,10 +184,10 @@ return [
         'active' => '启用',
         'inactive' => '禁止',
     ],
-    'settings' =>[
+    'settings' => [
         'name' => '系统设置',
         'description' => '系统设置',
-        'general'=>[
+        'general' => [
             'name' => '系统设置',
             'description' => '系统设置',
         ],
@@ -204,7 +204,7 @@ return [
             ],
             'copyright' => '版权信息',
         ],
-        'payment'=>[
+        'payment' => [
             'name' => '支付接口',
             'description' => '支付接口',
         ],
@@ -216,7 +216,7 @@ return [
             'alipay' => '支付宝支付',
             'wechat' => '微信支付',
         ],
-        'mode' =>[
+        'mode' => [
             'normal' => '正常',
             'service' => '服务商',
             'sandbox' => '沙箱',
@@ -250,5 +250,5 @@ return [
             'mode' => '支付模式',
             'description' => '启用微信支付接口',
         ],
-    ]
+    ],
 ];

@@ -2,7 +2,7 @@
 
 return [
 
-    'title' => '仪表板',
+    'title' => '主页',
 
     'actions' => [
 
