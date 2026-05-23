@@ -51,10 +51,12 @@ class PetResource extends Resource implements Translateable
                 TextInput::make('name')
                     ->required()
                     ->maxLength(50),
-                TextInput::make('species')
+                Select::make('pet_species_id')
                     ->required()
                     ->label(trans('filament-model.attributes.pet.species'))
-                    ->placeholder(trans('filament-model.attributes.pet.species_placeholder')),
+                    ->relationship('species', 'name')
+                    ->preload()
+                    ->searchable(),
                 TextInput::make('breed')
                     ->label(trans('filament-model.attributes.pet.breed'))
                     ->placeholder(trans('filament-model.attributes.pet.breed_placeholder')),
@@ -95,7 +97,7 @@ class PetResource extends Resource implements Translateable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('species')
+                TextColumn::make('species.name')
                     ->label(trans('filament-model.attributes.pet.species')),
                 TextColumn::make('breed')
                     ->label(trans('filament-model.attributes.pet.breed')),
@@ -133,9 +135,10 @@ class PetResource extends Resource implements Translateable
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('species')
+                SelectFilter::make('pet_species_id')
                     ->label(trans('filament-model.attributes.pet.species'))
-                    ->options(fn (): array => Pet::distinct()->pluck('species', 'species')->toArray()),
+                    ->relationship('species', 'name')
+                    ->preload(),
                 SelectFilter::make('status')
                     ->label(trans('filament-model.general.status'))
                     ->options([

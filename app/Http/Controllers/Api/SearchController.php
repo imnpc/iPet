@@ -47,7 +47,9 @@ class SearchController extends Controller
         if (in_array($type, ['all', 'pets'])) {
             $pets = Pet::where(function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
-                    ->orWhere('species', 'like', "%{$query}%")
+                    ->orWhereHas('species', function ($q) use ($query) {
+                        $q->where('name', 'like', "%{$query}%");
+                    })
                     ->orWhere('breed', 'like', "%{$query}%");
             })
                 ->limit(20)

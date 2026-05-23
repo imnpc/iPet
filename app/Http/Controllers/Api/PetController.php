@@ -35,7 +35,7 @@ class PetController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:50',
-            'species' => 'required|string|max:30',
+            'pet_species_id' => 'required|exists:pet_species,id',
             'breed' => 'nullable|string|max:100',
             'gender' => 'nullable|in:male,female,unknown',
             'birthday' => 'nullable|date',
@@ -70,7 +70,7 @@ class PetController extends Controller
 
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:50',
-            'species' => 'sometimes|required|string|max:30',
+            'pet_species_id' => 'sometimes|required|exists:pet_species,id',
             'breed' => 'nullable|string|max:100',
             'gender' => 'nullable|in:male,female,unknown',
             'birthday' => 'nullable|date',

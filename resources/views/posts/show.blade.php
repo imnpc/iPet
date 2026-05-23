@@ -4,7 +4,7 @@
 
 @section('content')
 @php
-    $speciesLabel = filled($post->pet?->species) ? trim($post->pet->species) : '未分类';
+    $speciesLabel = $post->pet?->species?->name ?? '未分类';
 @endphp
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_minmax(0,1fr)_260px] lg:gap-5">

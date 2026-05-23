@@ -18,11 +18,12 @@ class PetTypeChart extends ChartWidget
 
     protected function getData(): array
     {
-        $types = Pet::selectRaw('species, count(*) as count')
-            ->groupBy('species')
-            ->orderByDesc('count')
-            ->limit(10)
-            ->get();
+        $types = Pet::with('species')
+            ->get()
+            ->groupBy('species.name')
+            ->map(fn ($group) => $group->count())
+            ->sortDesc()
+            ->take(10);
 
         $colors = [
             '#3b82f6',
@@ -45,7 +46,7 @@ class PetTypeChart extends ChartWidget
                     'backgroundColor' => array_slice($colors, 0, $types->count()),
                 ],
             ],
-            'labels' => $types->pluck('species')->toArray(),
+            'labels' => $types->keys()->toArray(),
         ];
     }
 

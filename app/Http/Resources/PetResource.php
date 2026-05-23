@@ -13,7 +13,7 @@ class PetResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'name' => $this->name,
-            'species' => $this->species,
+            'species' => $this->species?->name,
             'breed' => $this->breed,
             'gender' => $this->gender,
             'birthday' => $this->birthday?->format('Y-m-d'),

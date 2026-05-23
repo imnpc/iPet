@@ -70,7 +70,7 @@
                             @if($pet->is_default)
                                 <span class="absolute top-3 left-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">默认</span>
                             @endif
-                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-warm-700 text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">{{ $pet->species }}</span>
+                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-warm-700 text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">{{ $pet->species?->name }}</span>
                         </div>
                         <div class="p-5">
                             <div class="flex justify-between items-start mb-3">

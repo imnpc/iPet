@@ -12,16 +12,8 @@ class PetRecordResource extends JsonResource
         return [
             'id' => $this->id,
             'pet_id' => $this->pet_id,
-            'type' => $this->type,
-            'type_label' => match ($this->type) {
-                'vaccine' => '疫苗',
-                'checkup' => '体检',
-                'illness' => '病历',
-                'medication' => '用药',
-                'surgery' => '手术',
-                'grooming' => '美容',
-                default => '其他',
-            },
+            'type' => $this->type?->slug,
+            'type_label' => $this->type?->name,
             'title' => $this->title,
             'visit_date' => $this->visit_date?->format('Y-m-d'),
             'next_visit_date' => $this->next_visit_date?->format('Y-m-d'),

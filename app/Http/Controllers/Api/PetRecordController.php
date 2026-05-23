@@ -42,7 +42,7 @@ class PetRecordController extends Controller
     {
         $validated = $request->validate([
             'pet_id' => 'required|exists:pets,id',
-            'type' => 'required|in:vaccine,checkup,illness,medication,surgery,grooming,other',
+            'pet_record_type_id' => 'required|exists:pet_record_types,id',
             'title' => 'required|string|max:200',
             'visit_date' => 'required|date',
             'next_visit_date' => 'nullable|date',
@@ -88,7 +88,7 @@ class PetRecordController extends Controller
         })->findOrFail($id);
 
         $validated = $request->validate([
-            'type' => 'sometimes|required|in:vaccine,checkup,illness,medication,surgery,grooming,other',
+            'pet_record_type_id' => 'sometimes|required|exists:pet_record_types,id',
             'title' => 'sometimes|required|string|max:200',
             'visit_date' => 'sometimes|required|date',
             'next_visit_date' => 'nullable|date',

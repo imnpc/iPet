@@ -21,7 +21,7 @@ class PetRecord extends Model
 
     protected $fillable = [
         'pet_id',
-        'type',
+        'pet_record_type_id',
         'title',
         'visit_date',
         'next_visit_date',
@@ -59,5 +59,10 @@ class PetRecord extends Model
     public function pet(): BelongsTo
     {
         return $this->belongsTo(Pet::class);
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(PetRecordType::class, 'pet_record_type_id');
     }
 }

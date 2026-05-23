@@ -6,6 +6,7 @@ use App\Jobs\ProcessVideoJob;
 use App\Models\Comment;
 use App\Models\Pet;
 use App\Models\PetRecord;
+use App\Models\PetSpecies;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -31,8 +32,8 @@ class HomeController extends Controller
         }
 
         if ($request->filled('species')) {
-            $query->whereHas('pet', function ($petQuery) use ($request) {
-                $petQuery->where('species', $request->string('species')->value());
+            $query->whereHas('pet.species', function ($speciesQuery) use ($request) {
+                $speciesQuery->where('name', $request->string('species')->value());
             });
         }
 
@@ -43,7 +44,9 @@ class HomeController extends Controller
                     ->orWhere('location', 'like', "%{$keyword}%")
                     ->orWhereHas('pet', function ($petQuery) use ($keyword): void {
                         $petQuery->where('name', 'like', "%{$keyword}%")
-                            ->orWhere('species', 'like', "%{$keyword}%")
+                            ->orWhereHas('species', function ($speciesQuery) use ($keyword): void {
+                                $speciesQuery->where('name', 'like', "%{$keyword}%");
+                            })
                             ->orWhere('breed', 'like', "%{$keyword}%");
                     });
             });
@@ -60,12 +63,10 @@ class HomeController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        $speciesOptions = Pet::query()
-            ->whereNotNull('species')
-            ->where('species', '!=', '')
-            ->distinct()
-            ->orderBy('species')
-            ->pluck('species');
+        $speciesOptions = PetSpecies::query()
+            ->where('is_enabled', true)
+            ->orderBy('sort_order')
+            ->pluck('name');
 
         return view('posts.index', compact('posts', 'speciesOptions'));
     }
@@ -125,7 +126,7 @@ class HomeController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:50',
-            'species' => 'required|string|max:30',
+            'pet_species_id' => 'required|exists:pet_species,id',
             'breed' => 'nullable|string|max:100',
             'gender' => 'nullable|in:male,female,unknown',
             'birthday' => 'nullable|date',
@@ -169,7 +170,7 @@ class HomeController extends Controller
         abort_unless($request->user()?->id === $pet->user_id, 403);
 
         $validated = $request->validate([
-            'type' => 'required|in:vaccine,checkup,illness,medication,surgery,grooming,other',
+            'pet_record_type_id' => 'required|exists:pet_record_types,id',
             'title' => 'required|string|max:200',
             'visit_date' => 'required|date',
             'next_visit_date' => 'nullable|date',
@@ -206,7 +207,7 @@ class HomeController extends Controller
         abort_unless($record->pet_id === $pet->id, 404);
 
         $validated = $request->validate([
-            'type' => 'sometimes|required|in:vaccine,checkup,illness,medication,surgery,grooming,other',
+            'pet_record_type_id' => 'sometimes|required|exists:pet_record_types,id',
             'title' => 'sometimes|required|string|max:200',
             'visit_date' => 'sometimes|required|date',
             'next_visit_date' => 'nullable|date',
@@ -248,7 +249,7 @@ class HomeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:50',
-            'species' => 'required|string|max:30',
+            'pet_species_id' => 'required|exists:pet_species,id',
             'breed' => 'nullable|string|max:100',
             'gender' => 'nullable|in:male,female,unknown',
             'birthday' => 'nullable|date',
@@ -342,8 +343,8 @@ class HomeController extends Controller
         }
 
         if ($request->filled('species')) {
-            $query->whereHas('pet', function ($petQuery) use ($request) {
-                $petQuery->where('species', $request->string('species')->value());
+            $query->whereHas('pet.species', function ($speciesQuery) use ($request) {
+                $speciesQuery->where('name', $request->string('species')->value());
             });
         }
 
@@ -354,7 +355,9 @@ class HomeController extends Controller
                     ->orWhere('location', 'like', "%{$keyword}%")
                     ->orWhereHas('pet', function ($petQuery) use ($keyword): void {
                         $petQuery->where('name', 'like', "%{$keyword}%")
-                            ->orWhere('species', 'like', "%{$keyword}%")
+                            ->orWhereHas('species', function ($speciesQuery) use ($keyword): void {
+                                $speciesQuery->where('name', 'like', "%{$keyword}%");
+                            })
                             ->orWhere('breed', 'like', "%{$keyword}%");
                     });
             });
@@ -371,12 +374,10 @@ class HomeController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        $speciesOptions = Pet::query()
-            ->whereNotNull('species')
-            ->where('species', '!=', '')
-            ->distinct()
-            ->orderBy('species')
-            ->pluck('species');
+        $speciesOptions = PetSpecies::query()
+            ->where('is_enabled', true)
+            ->orderBy('sort_order')
+            ->pluck('name');
 
         return view('posts.index', compact('posts', 'speciesOptions'));
     }

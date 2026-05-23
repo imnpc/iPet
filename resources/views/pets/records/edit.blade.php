@@ -21,17 +21,13 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                     <label class="ui-label">记录类型 <span class="text-danger-500">*</span></label>
-                    <select name="type" required class="ui-select @error('type') border-danger-300 @enderror">
+                    <select name="pet_record_type_id" required class="ui-select @error('pet_record_type_id') border-danger-300 @enderror">
                         <option value="">请选择</option>
-                        <option value="vaccine" {{ old('type', $record->type) === 'vaccine' ? 'selected' : '' }}>疫苗</option>
-                        <option value="checkup" {{ old('type', $record->type) === 'checkup' ? 'selected' : '' }}>体检</option>
-                        <option value="illness" {{ old('type', $record->type) === 'illness' ? 'selected' : '' }}>病历</option>
-                        <option value="medication" {{ old('type', $record->type) === 'medication' ? 'selected' : '' }}>用药</option>
-                        <option value="surgery" {{ old('type', $record->type) === 'surgery' ? 'selected' : '' }}>手术</option>
-                        <option value="grooming" {{ old('type', $record->type) === 'grooming' ? 'selected' : '' }}>美容</option>
-                        <option value="other" {{ old('type', $record->type) === 'other' ? 'selected' : '' }}>其他</option>
+                        @foreach(\App\Models\PetRecordType::where('is_enabled', true)->orderBy('sort_order')->get() as $type)
+                            <option value="{{ $type->id }}" {{ old('pet_record_type_id', $record->pet_record_type_id) == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                        @endforeach
                     </select>
-                    @error('type')
+                    @error('pet_record_type_id')
                         <p class="mt-2 text-sm text-danger-600">{{ $message }}</p>
                     @enderror
                 </div>

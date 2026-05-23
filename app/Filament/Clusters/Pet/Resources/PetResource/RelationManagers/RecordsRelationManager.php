@@ -32,17 +32,10 @@ class RecordsRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                Select::make('type')
+                Select::make('pet_record_type_id')
                     ->label(trans('filament-model.general.type'))
-                    ->options([
-                        'vaccine' => trans('filament-model.attributes.pet_record.type_options.vaccine'),
-                        'checkup' => trans('filament-model.attributes.pet_record.type_options.checkup'),
-                        'illness' => trans('filament-model.attributes.pet_record.type_options.illness_detail'),
-                        'medication' => trans('filament-model.attributes.pet_record.type_options.medication'),
-                        'surgery' => trans('filament-model.attributes.pet_record.type_options.surgery'),
-                        'grooming' => trans('filament-model.attributes.pet_record.type_options.grooming_detail'),
-                        'other' => trans('filament-model.attributes.pet_record.type_options.other'),
-                    ])
+                    ->relationship('type', 'name')
+                    ->preload()
                     ->required(),
                 TextInput::make('title')
                     ->label(trans('filament-model.general.name'))
@@ -95,17 +88,8 @@ class RecordsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                TextColumn::make('type')
-                    ->badge()
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'vaccine' => trans('filament-model.attributes.pet_record.type_options.vaccine'),
-                        'checkup' => trans('filament-model.attributes.pet_record.type_options.checkup'),
-                        'illness' => trans('filament-model.attributes.pet_record.type_options.illness'),
-                        'medication' => trans('filament-model.attributes.pet_record.type_options.medication'),
-                        'surgery' => trans('filament-model.attributes.pet_record.type_options.surgery'),
-                        'grooming' => trans('filament-model.attributes.pet_record.type_options.grooming'),
-                        default => trans('filament-model.attributes.pet_record.type_options.other'),
-                    }),
+                TextColumn::make('type.name')
+                    ->label(trans('filament-model.general.type')),
                 TextColumn::make('title'),
                 TextColumn::make('visit_date')
                     ->date(),

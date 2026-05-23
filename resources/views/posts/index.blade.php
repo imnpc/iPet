@@ -96,7 +96,7 @@
         @forelse($posts as $post)
             @php
                 $postShowUrl = route('posts.show', $post);
-                $speciesLabel = filled($post->pet?->species) ? trim($post->pet->species) : '未分类';
+                $speciesLabel = $post->pet?->species?->name ?? '未分类';
             @endphp
 
             <div class="post-card js-post-card overflow-hidden rounded-2xl border border-warm-200 bg-white hover:border-warm-300 hover:shadow-sm transition-all duration-300 cursor-pointer" data-href="{{ $postShowUrl }}">

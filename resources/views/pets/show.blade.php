@@ -39,7 +39,7 @@
                                 <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">默认宠物</span>
                             @endif
                         </div>
-                        <p class="text-white/90 text-lg font-medium">{{ $pet->species }} · {{ $pet->breed ?: '未知品种' }}</p>
+                        <p class="text-white/90 text-lg font-medium">{{ $pet->species?->name }} · {{ $pet->breed ?: '未知品种' }}</p>
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                     <div class="flex justify-between py-3 border-b border-warm-100">
                         <span class="text-warm-500 font-medium">物种</span>
-                        <span class="font-semibold text-warm-900">{{ $pet->species }}</span>
+                        <span class="font-semibold text-warm-900">{{ $pet->species?->name }}</span>
                     </div>
                     <div class="flex justify-between py-3 border-b border-warm-100">
                         <span class="text-warm-500 font-medium">品种</span>
@@ -176,22 +176,23 @@
                         @foreach($petRecords as $record)
                             @php
                                 $typeColors = [
-                                    'vaccine' => ['bg-green-50', 'text-green-600', 'border-green-200', '疫苗'],
-                                    'checkup' => ['bg-blue-50', 'text-blue-600', 'border-blue-200', '体检'],
-                                    'illness' => ['bg-red-50', 'text-red-600', 'border-red-200', '病历'],
-                                    'medication' => ['bg-yellow-50', 'text-yellow-600', 'border-yellow-200', '用药'],
-                                    'surgery' => ['bg-purple-50', 'text-purple-600', 'border-purple-200', '手术'],
-                                    'grooming' => ['bg-pink-50', 'text-pink-600', 'border-pink-200', '美容'],
-                                    'other' => ['bg-warm-50', 'text-warm-600', 'border-warm-200', '其他'],
+                                    'green' => ['bg-green-50', 'text-green-600', 'border-green-200'],
+                                    'blue' => ['bg-blue-50', 'text-blue-600', 'border-blue-200'],
+                                    'red' => ['bg-red-50', 'text-red-600', 'border-red-200'],
+                                    'yellow' => ['bg-yellow-50', 'text-yellow-600', 'border-yellow-200'],
+                                    'purple' => ['bg-purple-50', 'text-purple-600', 'border-purple-200'],
+                                    'pink' => ['bg-pink-50', 'text-pink-600', 'border-pink-200'],
+                                    'warm' => ['bg-warm-50', 'text-warm-600', 'border-warm-200'],
                                 ];
-                                $typeStyle = $typeColors[$record->type] ?? $typeColors['other'];
+                                $typeColor = $record->type?->color ?? 'warm';
+                                $typeStyle = $typeColors[$typeColor] ?? $typeColors['warm'];
                             @endphp
                             <div class="record-card {{ $typeStyle[0] }} border {{ $typeStyle[2] }} rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
 
                                 <div class="flex items-start justify-between mb-3">
                                     <div class="flex items-center gap-3 flex-wrap">
                                         <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-white border {{ $typeStyle[2] }} {{ $typeStyle[1] }}">
-                                            {{ $typeStyle[3] }}
+                                            {{ $record->type?->name }}
                                         </span>
                                         @if(! $record->is_public)
                                             <span class="inline-flex items-center gap-1 text-xs text-warm-500 bg-warm-100/80 px-2.5 py-1 rounded-full border border-warm-200 font-medium">
@@ -331,7 +332,7 @@
                         @foreach($petPosts as $post)
                             @php
                                 $postShowUrl = route('posts.show', $post);
-                                $speciesLabel = filled($post->pet?->species) ? trim($post->pet->species) : '未分类';
+                                $speciesLabel = $post->pet?->species?->name ?? '未分类';
                             @endphp
 
                             <div class="post-card js-post-card ui-card ui-card-shadow overflow-hidden cursor-pointer animate-fade-in-up transition-all duration-300 hover:-translate-y-1 hover:shadow-lg" data-href="{{ $postShowUrl }}">

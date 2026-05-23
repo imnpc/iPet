@@ -45,17 +45,11 @@ class PetRecordResource extends Resource implements Translateable
                     ->label(trans('filament-model.label.pet.label'))
                     ->relationship('pet', 'name')
                     ->required(),
-                Select::make('type')
+                Select::make('pet_record_type_id')
                     ->label(trans('filament-model.general.type'))
-                    ->options([
-                        'vaccine' => trans('filament-model.attributes.pet_record.type_options.vaccine'),
-                        'checkup' => trans('filament-model.attributes.pet_record.type_options.checkup'),
-                        'illness' => trans('filament-model.attributes.pet_record.type_options.illness_detail'),
-                        'medication' => trans('filament-model.attributes.pet_record.type_options.medication'),
-                        'surgery' => trans('filament-model.attributes.pet_record.type_options.surgery'),
-                        'grooming' => trans('filament-model.attributes.pet_record.type_options.grooming_detail'),
-                        'other' => trans('filament-model.attributes.pet_record.type_options.other'),
-                    ])
+                    ->relationship('type', 'name')
+                    ->preload()
+                    ->searchable()
                     ->required(),
                 TextInput::make('title')
                     ->label(trans('filament-model.general.name'))
@@ -118,17 +112,8 @@ class PetRecordResource extends Resource implements Translateable
             ->columns([
                 TextColumn::make('pet.name')
                     ->label(trans('filament-model.label.pet.label')),
-                TextColumn::make('type')
-                    ->badge()
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'vaccine' => trans('filament-model.attributes.pet_record.type_options.vaccine'),
-                        'checkup' => trans('filament-model.attributes.pet_record.type_options.checkup'),
-                        'illness' => trans('filament-model.attributes.pet_record.type_options.illness'),
-                        'medication' => trans('filament-model.attributes.pet_record.type_options.medication'),
-                        'surgery' => trans('filament-model.attributes.pet_record.type_options.surgery'),
-                        'grooming' => trans('filament-model.attributes.pet_record.type_options.grooming'),
-                        default => trans('filament-model.attributes.pet_record.type_options.other'),
-                    }),
+                TextColumn::make('type.name')
+                    ->label(trans('filament-model.general.type')),
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('visit_date')
@@ -142,17 +127,10 @@ class PetRecordResource extends Resource implements Translateable
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('type')
+                SelectFilter::make('pet_record_type_id')
                     ->label(trans('filament-model.general.type'))
-                    ->options([
-                        'vaccine' => trans('filament-model.attributes.pet_record.type_options.vaccine'),
-                        'checkup' => trans('filament-model.attributes.pet_record.type_options.checkup'),
-                        'illness' => trans('filament-model.attributes.pet_record.type_options.illness'),
-                        'medication' => trans('filament-model.attributes.pet_record.type_options.medication'),
-                        'surgery' => trans('filament-model.attributes.pet_record.type_options.surgery'),
-                        'grooming' => trans('filament-model.attributes.pet_record.type_options.grooming'),
-                        'other' => trans('filament-model.attributes.pet_record.type_options.other'),
-                    ]),
+                    ->relationship('type', 'name')
+                    ->preload(),
                 SelectFilter::make('pet_id')
                     ->label(trans('filament-model.label.pet.label'))
                     ->relationship('pet', 'name'),

@@ -49,15 +49,13 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                     <label class="ui-label">物种 <span class="text-danger-500">*</span></label>
-                    <select name="species" required class="ui-select">
+                    <select name="pet_species_id" required class="ui-select">
                         <option value="">请选择</option>
-                        <option value="狗" {{ old('species', $pet->species) === '狗' ? 'selected' : '' }}>🐶 狗</option>
-                        <option value="猫" {{ old('species', $pet->species) === '猫' ? 'selected' : '' }}>🐱 猫</option>
-                        <option value="兔子" {{ old('species', $pet->species) === '兔子' ? 'selected' : '' }}>🐰 兔子</option>
-                        <option value="仓鼠" {{ old('species', $pet->species) === '仓鼠' ? 'selected' : '' }}>🐹 仓鼠</option>
-                        <option value="其他" {{ old('species', $pet->species) === '其他' ? 'selected' : '' }}>其他</option>
+                        @foreach(\App\Models\PetSpecies::where('is_enabled', true)->orderBy('sort_order')->get() as $species)
+                            <option value="{{ $species->id }}" {{ old('pet_species_id', $pet->pet_species_id) == $species->id ? 'selected' : '' }}>{{ $species->name }}</option>
+                        @endforeach
                     </select>
-                    @error('species')
+                    @error('pet_species_id')
                         <p class="mt-2 text-sm text-danger-600">{{ $message }}</p>
                     @enderror
                 </div>
