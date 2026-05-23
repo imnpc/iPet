@@ -17,6 +17,9 @@ return [
         'pay_log' => ' 支付记录|支付记录',
         'wallet' => '钱包列表|钱包列表',
         'transaction' => '交易记录|交易记录',
+        'pet' => '宠物|宠物',
+        'pet_record' => '医疗记录|医疗记录',
+        'post' => '动态|动态',
     ],
 
     /*
@@ -48,6 +51,9 @@ return [
             'money' => '金额',
             'tooltip' => '钱包充值',
             'remark' => '备注',
+            'pets_count' => '宠物数量',
+            'view_pets' => '查看宠物',
+            'impersonate_login' => '登录该用户',
         ],
         'user_wallet_log' => [
             'walletType' => '钱包名称',
@@ -68,6 +74,75 @@ return [
             'confirm_at' => '确认时间',
             'notify_log' => '通知记录',
             'remark' => '备注',
+        ],
+        'pet' => [
+            'species' => '物种',
+            'breed' => '品种',
+            'species_placeholder' => '如：狗、猫、兔子',
+            'breed_placeholder' => '如：金毛、布偶猫',
+            'gender' => '性别',
+            'birthday' => '生日',
+            'adoption_date' => '领养日期',
+            'avatar_placeholder' => '头像 URL',
+            'metadata' => '扩展信息',
+            'metadata_key' => '属性',
+            'metadata_value' => '值',
+            'is_default' => '设为默认宠物',
+            'is_default_table' => '默认',
+            'owner' => '主人',
+            'records_count' => '记录数',
+            'posts_count' => '动态数',
+            'gender_options' => [
+                'male' => '公',
+                'female' => '母',
+                'unknown' => '未知',
+            ],
+            'status_options' => [
+                'active' => '正常',
+                'archived' => '归档',
+                'deceased' => '离世',
+            ],
+        ],
+        'post' => [
+            'author' => '作者',
+            'content' => '内容',
+            'location' => '位置',
+            'related_pet' => '关联宠物',
+            'visibility' => '可见范围',
+            'is_pinned' => '置顶',
+            'allow_comment' => '允许评论',
+            'published_at' => '发布时间',
+            'like_count' => '点赞',
+            'visibility_options' => [
+                'public' => '公开',
+                'followers' => '粉丝可见',
+                'private' => '私密',
+            ],
+        ],
+        'pet_record' => [
+            'visit_date' => '就诊日期',
+            'next_visit_date' => '下次就诊日期',
+            'hospital_name' => '医院名称',
+            'vet_name' => '医生姓名',
+            'hospital_phone' => '医院电话',
+            'weight' => '体重',
+            'temperature' => '体温',
+            'symptoms' => '症状',
+            'diagnosis' => '诊断',
+            'treatment' => '治疗方案',
+            'prescription' => '处方',
+            'cost' => '费用',
+            'type_options' => [
+                'vaccine' => '疫苗',
+                'checkup' => '体检',
+                'illness' => '病历',
+                'illness_detail' => '病历/疾病',
+                'medication' => '用药',
+                'surgery' => '手术',
+                'grooming' => '美容',
+                'grooming_detail' => '美容护理',
+                'other' => '其他',
+            ],
         ],
     ],
 
@@ -98,6 +173,9 @@ return [
         ],
         'setting' => [
             'name' => '设置',
+        ],
+        'pet' => [
+            'name' => '宠物',
         ],
     ],
 
@@ -131,6 +209,18 @@ return [
         'pay_log' => [
             'label' => '支付记录',
             'plural_label' => '支付记录',
+        ],
+        'pet' => [
+            'label' => '宠物',
+            'plural_label' => '宠物',
+        ],
+        'pet_record' => [
+            'label' => '医疗记录',
+            'plural_label' => '医疗记录',
+        ],
+        'post' => [
+            'label' => '动态',
+            'plural_label' => '动态',
         ],
     ],
 
@@ -249,6 +339,33 @@ return [
             'sub_mch_id' => '子商户 ID',
             'mode' => '支付模式',
             'description' => '启用微信支付接口',
+        ],
+    ],
+
+    'widgets' => [
+        'pet' => [
+            'weight_trend' => '体重变化趋势',
+            'weight_kg' => '体重 (kg)',
+            'type_distribution' => '宠物类型分布',
+            'count' => '宠物数量',
+        ],
+        'post' => [
+            'trend_30_days' => '动态发布趋势（最近30天）',
+            'publish_count' => '发布数量',
+        ],
+        'stats' => [
+            'users_total' => '用户总数',
+            'users_registered' => '注册用户数',
+            'pets_total' => '宠物总数',
+            'pets_recorded' => '已录入的宠物',
+            'posts_total' => '动态总数',
+            'posts_published' => '已发布的动态',
+            'records_total' => '医疗记录',
+            'records_pet_medical' => '宠物医疗记录数',
+            'likes_total' => '点赞数',
+            'likes_total_count' => '总点赞次数',
+            'comments_total' => '评论数',
+            'comments_total_count' => '总评论数',
         ],
     ],
 ];
