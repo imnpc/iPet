@@ -1,0 +1,453 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Jobs\ProcessVideoJob;
+use App\Models\Comment;
+use App\Models\Pet;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+
+class HomeController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Post::with(['user', 'pet', 'media', 'tags'])
+            ->whereNotNull('published_at')
+            ->where(function ($query) use ($request) {
+                $query->where('visibility', 'public');
+
+                if ($request->user() instanceof User) {
+                    $query->orWhere('user_id', $request->user()->id);
+                }
+            });
+
+        if ($request->filled('tag')) {
+            $query->withAnyTags([$request->input('tag')]);
+        }
+
+        if ($request->filled('species')) {
+            $query->whereHas('pet', function ($petQuery) use ($request) {
+                $petQuery->where('species', $request->string('species')->value());
+            });
+        }
+
+        if ($request->filled('q')) {
+            $keyword = $request->string('q')->trim()->value();
+            $query->where(function ($searchQuery) use ($keyword): void {
+                $searchQuery->where('content', 'like', "%{$keyword}%")
+                    ->orWhere('location', 'like', "%{$keyword}%")
+                    ->orWhereHas('pet', function ($petQuery) use ($keyword): void {
+                        $petQuery->where('name', 'like', "%{$keyword}%")
+                            ->orWhere('species', 'like', "%{$keyword}%")
+                            ->orWhere('breed', 'like', "%{$keyword}%");
+                    });
+            });
+        }
+
+        $posts = $query->orderBy('is_pinned', 'desc')
+            ->orderBy('published_at', 'desc')
+            ->when(
+                $request->user() instanceof User,
+                fn ($postQuery) => $postQuery->withExists([
+                    'likes as is_liked' => fn ($likeQuery) => $likeQuery->where('user_id', $request->user()->id),
+                ]),
+            )
+            ->paginate(20)
+            ->withQueryString();
+
+        $speciesOptions = Pet::query()
+            ->whereNotNull('species')
+            ->where('species', '!=', '')
+            ->distinct()
+            ->orderBy('species')
+            ->pluck('species');
+
+        return view('posts.index', compact('posts', 'speciesOptions'));
+    }
+
+    public function pets()
+    {
+        $user = Auth::user();
+
+        $pets = $user instanceof User
+            ? $user->pets()->withCount(['records', 'posts'])->orderBy('sort_order')->get()
+            : collect();
+
+        return view('pets.index', compact('pets'));
+    }
+
+    public function petShow(Request $request, Pet $pet)
+    {
+        $pet->load('records')->loadCount('posts');
+
+        $petPosts = $pet->posts()
+            ->whereNotNull('published_at')
+            ->latest('published_at')
+            ->latest('id')
+            ->with(['user', 'pet', 'media', 'tags'])
+            ->paginate(5)
+            ->withQueryString();
+
+        if ($request->user() instanceof User) {
+            $petPosts->getCollection()->loadExists([
+                'likes as is_liked' => fn ($likeQuery) => $likeQuery->where('user_id', $request->user()->id),
+            ]);
+        }
+
+        return view('pets.show', compact('pet', 'petPosts'));
+    }
+
+    public function petEdit(Request $request, Pet $pet)
+    {
+        abort_unless($request->user()?->id === $pet->user_id, 403);
+
+        return view('pets.edit', compact('pet'));
+    }
+
+    public function petUpdate(Request $request, Pet $pet)
+    {
+        abort_unless($request->user()?->id === $pet->user_id, 403);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:50',
+            'species' => 'required|string|max:30',
+            'breed' => 'nullable|string|max:100',
+            'gender' => 'nullable|in:male,female,unknown',
+            'birthday' => 'nullable|date',
+            'adoption_date' => 'nullable|date',
+            'avatar' => 'nullable|image|max:5120',
+            'is_default' => 'boolean',
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('pets/avatars', 'public');
+            $validated['avatar'] = asset('storage/'.$path);
+        }
+
+        $pet->update($validated);
+
+        if ($validated['is_default'] ?? false) {
+            $request->user()->pets()->where('id', '!=', $pet->id)->update(['is_default' => false]);
+        }
+
+        return redirect()->route('pets.show', $pet)->with('success', '宠物信息已更新');
+    }
+
+    public function petDestroy(Request $request, Pet $pet)
+    {
+        abort_unless($request->user()?->id === $pet->user_id, 403);
+
+        $pet->delete();
+
+        return redirect()->route('pets.index')->with('success', '宠物已删除');
+    }
+
+    public function petCreate()
+    {
+        return view('pets.create');
+    }
+
+    public function petStore(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:50',
+            'species' => 'required|string|max:30',
+            'breed' => 'nullable|string|max:100',
+            'gender' => 'nullable|in:male,female,unknown',
+            'birthday' => 'nullable|date',
+            'adoption_date' => 'nullable|date',
+            'avatar' => 'nullable|image|max:5120',
+            'is_default' => 'boolean',
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('pets/avatars', 'public');
+            $validated['avatar'] = asset('storage/'.$path);
+        }
+
+        $pet = $request->user()->pets()->create($validated);
+
+        if ($validated['is_default'] ?? false) {
+            $request->user()->pets()->where('id', '!=', $pet->id)->update(['is_default' => false]);
+        }
+
+        return redirect()->route('pets.index')->with('success', '宠物添加成功');
+    }
+
+    public function posts(Request $request)
+    {
+        $query = Post::with(['user', 'pet', 'media', 'tags'])
+            ->whereNotNull('published_at')
+            ->where(function ($query) use ($request) {
+                $query->where('visibility', 'public');
+
+                if ($request->user() instanceof User) {
+                    $query->orWhere('user_id', $request->user()->id);
+                }
+            });
+
+        if ($request->filled('tag')) {
+            $query->withAnyTags([$request->input('tag')]);
+        }
+
+        if ($request->filled('species')) {
+            $query->whereHas('pet', function ($petQuery) use ($request) {
+                $petQuery->where('species', $request->string('species')->value());
+            });
+        }
+
+        if ($request->filled('q')) {
+            $keyword = $request->string('q')->trim()->value();
+            $query->where(function ($searchQuery) use ($keyword): void {
+                $searchQuery->where('content', 'like', "%{$keyword}%")
+                    ->orWhere('location', 'like', "%{$keyword}%")
+                    ->orWhereHas('pet', function ($petQuery) use ($keyword): void {
+                        $petQuery->where('name', 'like', "%{$keyword}%")
+                            ->orWhere('species', 'like', "%{$keyword}%")
+                            ->orWhere('breed', 'like', "%{$keyword}%");
+                    });
+            });
+        }
+
+        $posts = $query->orderBy('is_pinned', 'desc')
+            ->orderBy('published_at', 'desc')
+            ->when(
+                $request->user() instanceof User,
+                fn ($postQuery) => $postQuery->withExists([
+                    'likes as is_liked' => fn ($likeQuery) => $likeQuery->where('user_id', $request->user()->id),
+                ]),
+            )
+            ->paginate(20)
+            ->withQueryString();
+
+        $speciesOptions = Pet::query()
+            ->whereNotNull('species')
+            ->where('species', '!=', '')
+            ->distinct()
+            ->orderBy('species')
+            ->pluck('species');
+
+        return view('posts.index', compact('posts', 'speciesOptions'));
+    }
+
+    public function postCreate()
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
+            return view('posts.create', ['pets' => collect()]);
+        }
+
+        $pets = $user->pets()->get();
+
+        return view('posts.create', compact('pets'));
+    }
+
+    public function postShow(Request $request, Post $post)
+    {
+        $commentSort = $request->string('comment_sort')->value();
+        $commentSort = in_array($commentSort, ['hot', 'time'], true) ? $commentSort : 'time';
+
+        $post->load([
+            'user',
+            'pet',
+            'media',
+            'tags',
+            'comments' => fn ($query) => $query
+                ->whereNull('parent_id')
+                ->when(
+                    $commentSort === 'hot',
+                    fn ($sortQuery) => $sortQuery->orderByDesc('like_count')->orderByDesc('created_at'),
+                    fn ($sortQuery) => $sortQuery->latest(),
+                )
+                ->with([
+                    'user',
+                    'children' => fn ($childQuery) => $childQuery
+                        ->oldest()
+                        ->with('user'),
+                ]),
+        ]);
+
+        if ($request->user() instanceof User) {
+            $post->loadExists([
+                'likes as is_liked' => fn ($likeQuery) => $likeQuery->where('user_id', $request->user()->id),
+            ]);
+
+            $post->comments->loadExists([
+                'likes as is_liked' => fn ($likeQuery) => $likeQuery->where('user_id', $request->user()->id),
+            ]);
+
+            $post->comments->each(function (Comment $comment) use ($request): void {
+                $comment->children->loadExists([
+                    'likes as is_liked' => fn ($likeQuery) => $likeQuery->where('user_id', $request->user()->id),
+                ]);
+            });
+        }
+
+        return view('posts.show', [
+            'post' => $post,
+            'commentSort' => $commentSort,
+        ]);
+    }
+
+    public function userShow(User $user)
+    {
+        $posts = $user->posts()
+            ->with(['pet', 'media', 'tags'])
+            ->whereNotNull('published_at')
+            ->where('visibility', 'public')
+            ->when(
+                request()->user() instanceof User,
+                fn ($postQuery) => $postQuery->withExists([
+                    'likes as is_liked' => fn ($likeQuery) => $likeQuery->where('user_id', request()->user()->id),
+                ]),
+            )
+            ->orderBy('published_at', 'desc')
+            ->paginate(12);
+
+        return view('users.show', compact('user', 'posts'));
+    }
+
+    public function commentStore(Request $request, Post $post)
+    {
+        if (($post->allow_comment ?? true) === false) {
+            return redirect()->route('posts.show', $post)->with('error', '该动态已关闭评论');
+        }
+
+        $validated = $request->validate([
+            'content' => 'required|string|max:1000',
+            'parent_id' => [
+                'nullable',
+                Rule::exists('comments', 'id')->where(fn ($query) => $query->where('post_id', $post->id)),
+            ],
+        ]);
+
+        $parentId = $validated['parent_id'] ?? null;
+
+        if ($parentId !== null) {
+            $parentComment = $post->comments()->select(['id', 'parent_id'])->find($parentId);
+            $parentId = $parentComment?->parent_id ?? $parentComment?->id;
+        }
+
+        $request->user()->comments()->create([
+            'post_id' => $post->id,
+            'parent_id' => $parentId,
+            'content' => $validated['content'],
+        ]);
+
+        $post->increment('comment_count');
+
+        return redirect()->route('posts.show', ['post' => $post, 'comment_sort' => $request->string('comment_sort')->value() ?: null])->with('success', '评论发布成功');
+    }
+
+    public function postLike(Request $request, Post $post)
+    {
+        $like = $post->likes()->firstOrCreate([
+            'user_id' => $request->user()->id,
+        ], [
+            'created_at' => now(),
+        ]);
+
+        if ($like->wasRecentlyCreated) {
+            $post->increment('like_count');
+
+            return redirect()->to($request->input('return_to', url()->previous()))->with('success', '点赞成功');
+        }
+
+        return redirect()->to($request->input('return_to', url()->previous()))->with('success', '你已点过赞');
+    }
+
+    public function commentLike(Request $request, Post $post, Comment $comment)
+    {
+        abort_unless($comment->post_id === $post->id, 404);
+
+        $like = $comment->likes()->firstOrCreate([
+            'user_id' => $request->user()->id,
+        ], [
+            'created_at' => now(),
+        ]);
+
+        if ($like->wasRecentlyCreated) {
+            $comment->increment('like_count');
+
+            return redirect()->route('posts.show', ['post' => $post, 'comment_sort' => $request->string('comment_sort')->value() ?: null])->with('success', '点赞成功');
+        }
+
+        return redirect()->route('posts.show', ['post' => $post, 'comment_sort' => $request->string('comment_sort')->value() ?: null])->with('success', '你已点过赞');
+    }
+
+    public function postStore(Request $request)
+    {
+        $validated = $request->validate([
+            'content' => 'required|string|max:2000',
+            'pet_id' => [
+                'nullable',
+                Rule::exists('pets', 'id')->where(fn ($query) => $query->where('user_id', $request->user()->id)),
+            ],
+            'location' => 'nullable|string|max:200',
+            'visibility' => 'in:public,followers,private',
+            'published_at' => 'nullable|date',
+            'image_files' => 'nullable|array',
+            'image_files.*' => 'file|image|max:10240',
+            'video_files' => 'nullable|array',
+            'video_files.*' => 'file|mimetypes:video/mp4,video/quicktime,video/webm|max:102400',
+            'tags' => 'nullable|string',
+        ]);
+
+        $post = $request->user()->posts()->create([
+            'content' => $validated['content'],
+            'pet_id' => $validated['pet_id'] ?? null,
+            'location' => $validated['location'] ?? null,
+            'visibility' => $validated['visibility'] ?? 'public',
+            'published_at' => $validated['published_at'] ?? now(),
+        ]);
+
+        $sortOrder = 0;
+        $defaultDisk = config('filesystems.default');
+
+        if ($request->hasFile('image_files')) {
+            foreach ($request->file('image_files') as $imageFile) {
+                $path = $imageFile->store('posts/images');
+
+                $post->media()->create([
+                    'type' => 'image',
+                    'disk' => $defaultDisk,
+                    'path' => $path,
+                    'mime_type' => $imageFile->getClientMimeType(),
+                    'size' => $imageFile->getSize(),
+                    'sort_order' => $sortOrder++,
+                ]);
+            }
+        }
+
+        if ($request->hasFile('video_files')) {
+            foreach ($request->file('video_files') as $videoFile) {
+                $path = $videoFile->store('posts/videos');
+
+                $media = $post->media()->create([
+                    'type' => 'video',
+                    'disk' => $defaultDisk,
+                    'path' => $path,
+                    'mime_type' => $videoFile->getClientMimeType(),
+                    'size' => $videoFile->getSize(),
+                    'sort_order' => $sortOrder++,
+                ]);
+
+                ProcessVideoJob::dispatch($media);
+            }
+        }
+
+        if (! empty($validated['tags'])) {
+            $tagNames = array_filter(array_map('trim', explode(',', $validated['tags'])));
+            if (! empty($tagNames)) {
+                $post->attachTags($tagNames);
+            }
+        }
+
+        return redirect()->route('posts.index')->with('success', '动态发布成功');
+    }
+}
