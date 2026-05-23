@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Users;
 
-use App\Filament\Clusters\Permission\PermissionCluster;
+use App\Filament\Clusters\User\UserCluster;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -32,7 +32,7 @@ class UserResource extends Resource implements Translateable
     /**
      * 集群
      */
-    protected static ?string $cluster = PermissionCluster::class;
+    protected static ?string $cluster = UserCluster::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
@@ -87,7 +87,7 @@ class UserResource extends Resource implements Translateable
      */
     public static function getNavigationSort(): ?int
     {
-        return 1;
+        return 2;
     }
 
     // 搜索字段

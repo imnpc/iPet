@@ -178,7 +178,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             // 菜单分组排序
             ->navigationGroups([
-                __('filament-model.navigation_group.user.name'),
                 __('filament-model.navigation_group.role.name'),
                 __('filament-model.navigation_group.wallet.name'),
                 __('filament-model.navigation_group.setting.name'),
