@@ -36,6 +36,7 @@ class PetRecordResource extends JsonResource
             'prescription' => $this->prescription,
             'notes' => $this->notes,
             'cost' => $this->cost,
+            'is_public' => $this->is_public,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

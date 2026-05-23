@@ -36,6 +36,7 @@ class PetRecord extends Model
         'prescription',
         'notes',
         'cost',
+        'is_public',
     ];
 
     protected $casts = [
@@ -44,6 +45,7 @@ class PetRecord extends Model
         'weight' => 'decimal:2',
         'temperature' => 'decimal:1',
         'cost' => 'decimal:2',
+        'is_public' => 'boolean',
     ];
 
     public function getActivitylogOptions(): LogOptions
