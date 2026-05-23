@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PetRecordResource;
+use App\Models\Pet;
 use App\Models\PetRecord;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
@@ -25,8 +26,11 @@ class PetRecordController extends Controller
             'pet_id' => 'required|exists:pets,id',
         ]);
 
-        $pet = $request->user()->pets()->findOrFail($request->input('pet_id'));
+        $pet = Pet::findOrFail($request->input('pet_id'));
+        $isOwner = $request->user()->id === $pet->user_id;
+
         $records = $pet->records()
+            ->when(! $isOwner, fn ($query) => $query->where('is_public', true))
             ->orderBy('visit_date', 'desc')
             ->paginate($request->input('per_page', 20));
 
@@ -53,6 +57,7 @@ class PetRecordController extends Controller
             'prescription' => 'nullable|string',
             'notes' => 'nullable|string',
             'cost' => 'nullable|numeric',
+            'is_public' => 'nullable|boolean',
         ]);
 
         $pet = $request->user()->pets()->findOrFail($validated['pet_id']);
@@ -64,9 +69,13 @@ class PetRecordController extends Controller
     #[Get('{id}', middleware: ['auth:sanctum'])]
     public function show(Request $request, int $id): JsonResponse
     {
-        $record = PetRecord::whereHas('pet', function ($query) use ($request) {
-            $query->where('user_id', $request->user()->id);
-        })->findOrFail($id);
+        $record = PetRecord::findOrFail($id);
+        $isOwner = $record->pet->user_id === $request->user()->id;
+
+        // 非主人只能查看公开记录
+        if (! $isOwner && ! $record->is_public) {
+            abort(403, '无权查看此记录');
+        }
 
         return $this->success(new PetRecordResource($record));
     }
@@ -94,6 +103,7 @@ class PetRecordController extends Controller
             'prescription' => 'nullable|string',
             'notes' => 'nullable|string',
             'cost' => 'nullable|numeric',
+            'is_public' => 'nullable|boolean',
         ]);
 
         $record->update($validated);

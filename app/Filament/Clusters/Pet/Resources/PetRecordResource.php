@@ -16,6 +16,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -104,6 +105,10 @@ class PetRecordResource extends Resource implements Translateable
                     ->label(trans('filament-model.attributes.pet_record.cost'))
                     ->numeric()
                     ->prefix('¥'),
+                Toggle::make('is_public')
+                    ->label('是否公开')
+                    ->helperText('开启后其他用户也可查看此记录')
+                    ->default(false),
             ]);
     }
 
