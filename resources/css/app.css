@@ -6,6 +6,266 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Fredoka', ui-sans-serif, system-ui, sans-serif;
+
+    /* iPet 品牌色 - 温暖琥珀系 */
+    --color-primary-50: #fff8f0;
+    --color-primary-100: #ffefd6;
+    --color-primary-200: #ffd9a8;
+    --color-primary-300: #ffbc6d;
+    --color-primary-400: #ff9533;
+    --color-primary-500: #ff7a1a;
+    --color-primary-600: #f05c0a;
+    --color-primary-700: #c74408;
+    --color-primary-800: #9e360e;
+    --color-primary-900: #7f2e0f;
+
+    /* 辅助色 - 清新绿 */
+    --color-accent-50: #f0fdf4;
+    --color-accent-100: #dcfce7;
+    --color-accent-200: #bbf7d0;
+    --color-accent-300: #86efac;
+    --color-accent-400: #4ade80;
+    --color-accent-500: #22c55e;
+    --color-accent-600: #16a34a;
+    --color-accent-700: #15803d;
+    --color-accent-800: #166534;
+    --color-accent-900: #14532d;
+
+    /* 温暖中性色 */
+    --color-warm-50: #faf9f7;
+    --color-warm-100: #f5f3ef;
+    --color-warm-200: #e8e4dd;
+    --color-warm-300: #d4cfc5;
+    --color-warm-400: #b8b0a3;
+    --color-warm-500: #9c9182;
+    --color-warm-600: #827769;
+    --color-warm-700: #6b6155;
+    --color-warm-800: #5a5147;
+    --color-warm-900: #4d453c;
+
+    /* 语义色 */
+    --color-danger-50: #fef2f2;
+    --color-danger-100: #fee2e2;
+    --color-danger-500: #ef4444;
+    --color-danger-600: #dc2626;
+
+    --color-info-50: #eff6ff;
+    --color-info-100: #dbeafe;
+    --color-info-500: #3b82f6;
+    --color-info-600: #2563eb;
 }
+
+/* 全局样式 */
+body {
+    background-color: var(--color-warm-50);
+    color: var(--color-warm-900);
+}
+
+/* 设计令牌层：前台通用组件样式 */
+.ui-card {
+    border: 1px solid var(--color-warm-100);
+    border-radius: 1rem;
+    background: #fff;
+}
+
+.ui-card-shadow {
+    box-shadow: 0 4px 14px rgba(77, 69, 60, 0.08);
+}
+
+.ui-card-shadow-strong {
+    box-shadow: 0 10px 28px rgba(77, 69, 60, 0.12);
+}
+
+.ui-card-body {
+    padding: 1.5rem;
+}
+
+.ui-page-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+    color: var(--color-warm-900);
+}
+
+.ui-page-subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-warm-500);
+}
+
+.ui-section-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+    color: var(--color-warm-900);
+}
+
+.ui-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+}
+
+.ui-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: var(--color-warm-700);
+}
+
+.ui-helper {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--color-warm-500);
+}
+
+.ui-input,
+.ui-select,
+.ui-textarea {
+    width: 100%;
+    border: 1px solid var(--color-warm-200);
+    border-radius: 0.75rem;
+    background: #fff;
+    color: var(--color-warm-900);
+    box-shadow: 0 1px 2px rgba(77, 69, 60, 0.08);
+    transition: all 0.2s ease;
+}
+
+.ui-input,
+.ui-select {
+    padding: 0.625rem 0.75rem;
+}
+
+.ui-textarea {
+    padding: 0.75rem;
+    resize: none;
+}
+
+.ui-input:focus,
+.ui-select:focus,
+.ui-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary-400);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-300) 35%, transparent);
+}
+
+.ui-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(90deg, var(--color-primary-500), var(--color-primary-600));
+    color: #fff;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.ui-btn-primary:hover {
+    filter: brightness(0.96);
+}
+
+.ui-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    border: 2px solid var(--color-warm-200);
+    color: var(--color-warm-600);
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.ui-btn-secondary:hover {
+    border-color: var(--color-warm-300);
+    background: var(--color-warm-50);
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-warm-100);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-warm-300);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-warm-400);
+}
+
+/* 动画 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.4s ease-out forwards;
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* 延迟动画 */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
