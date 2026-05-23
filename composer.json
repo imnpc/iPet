@@ -43,6 +43,7 @@
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-query-builder": "^7.0",
         "spatie/laravel-route-attributes": "^1.25",
+        "stechstudio/filament-impersonate": "^5.4",
         "stijnvanouplines/blade-country-flags": "^1.0",
         "vinkla/hashids": "^14.0",
         "yansongda/laravel-pay": "~3.7.0",

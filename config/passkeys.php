@@ -1,11 +1,18 @@
 <?php
 
+use App\Models\Admin;
+use Spatie\LaravelPasskeys\Actions\FindPasskeyToAuthenticateAction;
+use Spatie\LaravelPasskeys\Actions\GeneratePasskeyAuthenticationOptionsAction;
+use Spatie\LaravelPasskeys\Actions\GeneratePasskeyRegisterOptionsAction;
+use Spatie\LaravelPasskeys\Actions\StorePasskeyAction;
+use Spatie\LaravelPasskeys\Models\Passkey;
+
 return [
     /*
      * After a successful authentication attempt using a passkey
      * we'll redirect to this URL.
      */
-    'redirect_to_after_login' => '/dashboard',
+    'redirect_to_after_login' => '/',
 
     /*
      * These class are responsible for performing core tasks regarding passkeys.
@@ -13,10 +20,10 @@ return [
      * by specifying your custom class name here.
      */
     'actions' => [
-        'generate_passkey_register_options' => Spatie\LaravelPasskeys\Actions\GeneratePasskeyRegisterOptionsAction::class,
-        'store_passkey' => Spatie\LaravelPasskeys\Actions\StorePasskeyAction::class,
-        'generate_passkey_authentication_options' => \Spatie\LaravelPasskeys\Actions\GeneratePasskeyAuthenticationOptionsAction::class,
-        'find_passkey' => Spatie\LaravelPasskeys\Actions\FindPasskeyToAuthenticateAction::class,
+        'generate_passkey_register_options' => GeneratePasskeyRegisterOptionsAction::class,
+        'store_passkey' => StorePasskeyAction::class,
+        'generate_passkey_authentication_options' => GeneratePasskeyAuthenticationOptionsAction::class,
+        'find_passkey' => FindPasskeyToAuthenticateAction::class,
     ],
 
     /*
@@ -34,7 +41,7 @@ return [
      * You can override this by specifying your own models
      */
     'models' => [
-        'passkey' => Spatie\LaravelPasskeys\Models\Passkey::class,
-        'authenticatable' => env('AUTH_MODEL', App\Models\Admin::class),
+        'passkey' => Passkey::class,
+        'authenticatable' => env('AUTH_MODEL', Admin::class),
     ],
 ];
