@@ -123,6 +123,19 @@
         return buffer;
     }
 
+    function normalizeRequestOptions(rawOptions) {
+        const options = rawOptions.publicKey ? rawOptions.publicKey : rawOptions;
+
+        options.challenge = base64UrlToArrayBuffer(options.challenge);
+        if (options.allowCredentials) {
+            options.allowCredentials.forEach((cred) => {
+                cred.id = base64UrlToArrayBuffer(cred.id);
+            });
+        }
+
+        return options;
+    }
+
     document.getElementById('passkey-login-btn').addEventListener('click', async function () {
         try {
             const optionsResponse = await fetch('/passkeys/authentication-options', {
@@ -137,15 +150,7 @@
                 throw new Error('获取认证选项失败');
             }
 
-            const options = await optionsResponse.json();
-
-            // 将 Base64Url 字符串解码为 ArrayBuffer
-            options.challenge = base64UrlToArrayBuffer(options.challenge);
-            if (options.allowCredentials) {
-                options.allowCredentials.forEach(cred => {
-                    cred.id = base64UrlToArrayBuffer(cred.id);
-                });
-            }
+            const options = normalizeRequestOptions(await optionsResponse.json());
 
             const credential = await navigator.credentials.get({
                 publicKey: options

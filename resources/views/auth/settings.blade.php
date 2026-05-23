@@ -131,11 +131,29 @@
         return buffer;
     }
 
+    function normalizeCreationOptions(rawOptions) {
+        const options = rawOptions.publicKey ? rawOptions.publicKey : rawOptions;
+
+        options.challenge = base64UrlToArrayBuffer(options.challenge);
+        if (options.user && options.user.id) {
+            options.user.id = base64UrlToArrayBuffer(options.user.id);
+        }
+        if (options.excludeCredentials) {
+            options.excludeCredentials.forEach((cred) => {
+                cred.id = base64UrlToArrayBuffer(cred.id);
+            });
+        }
+
+        return options;
+    }
+
     const addBtn = document.getElementById('add-passkey-btn');
     const form = document.getElementById('add-passkey-form');
     const cancelBtn = document.getElementById('cancel-add-passkey');
     const confirmBtn = document.getElementById('confirm-add-passkey');
     const nameInput = document.getElementById('passkey-name');
+    const passkeyOptionsUrl = @json(route('user.passkeys.options'));
+    const passkeyStoreUrl = @json(route('user.passkeys.store'));
 
     addBtn.addEventListener('click', () => {
         form.classList.remove('hidden');
@@ -158,7 +176,7 @@
         confirmBtn.textContent = '处理中...';
 
         try {
-            const optionsResponse = await fetch('{{ route('user.passkeys.options') }}', {
+            const optionsResponse = await fetch(passkeyOptionsUrl, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -171,18 +189,7 @@
                 throw new Error(errorData?.message || `服务器错误 (${optionsResponse.status})`);
             }
 
-            const options = await optionsResponse.json();
-
-            // 将 Base64Url 字符串解码为 ArrayBuffer
-            options.challenge = base64UrlToArrayBuffer(options.challenge);
-            if (options.user && options.user.id) {
-                options.user.id = base64UrlToArrayBuffer(options.user.id);
-            }
-            if (options.excludeCredentials) {
-                options.excludeCredentials.forEach(cred => {
-                    cred.id = base64UrlToArrayBuffer(cred.id);
-                });
-            }
+            const options = normalizeCreationOptions(await optionsResponse.json());
 
             const credential = await navigator.credentials.create({
                 publicKey: options
@@ -203,7 +210,7 @@
                 }
             };
 
-            const storeResponse = await fetch('{{ route('user.passkeys.store') }}', {
+            const storeResponse = await fetch(passkeyStoreUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

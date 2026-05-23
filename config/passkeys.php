@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Admin;
+use App\Models\User;
 use Spatie\LaravelPasskeys\Actions\FindPasskeyToAuthenticateAction;
 use Spatie\LaravelPasskeys\Actions\GeneratePasskeyAuthenticationOptionsAction;
 use Spatie\LaravelPasskeys\Actions\GeneratePasskeyRegisterOptionsAction;
@@ -42,6 +42,6 @@ return [
      */
     'models' => [
         'passkey' => Passkey::class,
-        'authenticatable' => env('AUTH_MODEL', Admin::class),
+        'authenticatable' => env('AUTH_MODEL', User::class),
     ],
 ];
