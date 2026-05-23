@@ -8,8 +8,9 @@ return new class extends Migration
 {
     public function up()
     {
-        if (!Schema::hasTable('bans')) {
+        if (! Schema::hasTable('bans')) {
             Schema::create('bans', function (Blueprint $table) {
+                $table->comment('封禁记录');
                 $table->increments('id');
                 $table->morphs('bannable');
                 $table->nullableMorphs('created_by');

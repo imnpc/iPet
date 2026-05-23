@@ -12,6 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create(Config::string('settings.database.table'), function (Blueprint $table) {
+            $table->comment('系统设置');
             $table->id();
             $table->string('key')
                 ->unique()

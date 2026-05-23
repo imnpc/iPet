@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_wallet_logs', function (Blueprint $table) {
+            $table->comment('用户钱包日志');
             $table->id();
             $table->integer('user_id')->comment('用户 ID');
             $table->integer('wallet_type_id')->comment('钱包类型 ID');

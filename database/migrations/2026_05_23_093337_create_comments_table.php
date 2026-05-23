@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('comments', function (Blueprint $table) {
+            $table->comment('评论');
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->comment('评论者');
             $table->foreignId('post_id')->constrained()->cascadeOnDelete()->comment('关联动态');

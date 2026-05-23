@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pet_records', function (Blueprint $table) {
+            $table->comment('医疗记录');
             $table->id();
             $table->foreignId('pet_id')->constrained()->cascadeOnDelete();
 

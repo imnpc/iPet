@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
+            $table->comment('管理员');
             $table->id();
             $table->string('name')->comment('名称');
             $table->string('email')->nullable()->comment('邮箱');

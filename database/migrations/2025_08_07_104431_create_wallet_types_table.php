@@ -5,13 +5,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('wallet_types', function (Blueprint $table) {
+            $table->comment('钱包类型');
             $table->id();
             $table->string('name')->comment('名称');
             $table->string('slug')->unique()->comment('大写英文代码');
@@ -28,17 +30,17 @@ return new class extends Migration {
         // 插入默认数据
         $walletTypes = [
             [
-                'name'        => '余额',
-                'slug'        => 'MONEY',
+                'name' => '余额',
+                'slug' => 'MONEY',
                 'description' => '余额',
-                'is_enabled'  => 1
+                'is_enabled' => 1,
             ],
             [
-                'name'        => '积分',
-                'slug'        => 'CREDIT',
+                'name' => '积分',
+                'slug' => 'CREDIT',
                 'description' => '积分',
-                'is_enabled'  => 1
-            ]
+                'is_enabled' => 1,
+            ],
         ];
         WalletType::insert($walletTypes);
     }

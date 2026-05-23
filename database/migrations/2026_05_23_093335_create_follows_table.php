@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('follows', function (Blueprint $table) {
+            $table->comment('关注关系');
             $table->id();
             $table->foreignId('follower_id')->constrained('users')->cascadeOnDelete()->comment('关注者');
             $table->foreignId('following_id')->constrained('users')->cascadeOnDelete()->comment('被关注者');

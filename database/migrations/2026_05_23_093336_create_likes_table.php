@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('likes', function (Blueprint $table) {
+            $table->comment('点赞');
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->comment('点赞用户');
             $table->morphs('likeable');

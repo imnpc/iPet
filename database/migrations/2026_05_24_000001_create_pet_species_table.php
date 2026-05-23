@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pet_species', function (Blueprint $table) {
+            $table->comment('宠物物种');
             $table->id();
             $table->string('name', 50)->comment('物种名称');
             $table->string('icon', 255)->nullable()->comment('图标');

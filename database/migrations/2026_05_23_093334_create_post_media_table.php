@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_media', function (Blueprint $table) {
+            $table->comment('动态媒体');
             $table->id();
             $table->foreignId('post_id')->constrained()->cascadeOnDelete();
 

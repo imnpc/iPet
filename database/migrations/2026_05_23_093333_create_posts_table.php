@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
+            $table->comment('动态');
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->comment('作者');
             $table->foreignId('pet_id')->nullable()->constrained()->nullOnDelete()->comment('关联宠物');
