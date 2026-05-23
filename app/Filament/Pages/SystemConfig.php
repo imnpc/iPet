@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Clusters\Settings\SettingsCluster;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\FileUpload;
@@ -26,10 +27,8 @@ class SystemConfig extends Settings
 
     /**
      * 集群
-     *
-     * @var string|null
      */
-    //    protected static ?string $cluster = PermissionCluster::class;
+    protected static ?string $cluster = SettingsCluster::class;
 
     public function form(Schema $schema): Schema
     {
@@ -275,7 +274,7 @@ class SystemConfig extends Settings
      */
     public static function getNavigationGroup(): ?string
     {
-        return '';
+        return __('filament-model.navigation_group.setting.name');
     }
 
     /**
@@ -291,6 +290,6 @@ class SystemConfig extends Settings
      */
     public static function getNavigationSort(): ?int
     {
-        return 100;
+        return 1;
     }
 }
