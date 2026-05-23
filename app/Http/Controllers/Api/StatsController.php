@@ -12,14 +12,16 @@ use App\Models\User;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Spatie\RouteAttributes\Attributes\Get;
+use Spatie\RouteAttributes\Attributes\Middleware;
 use Spatie\RouteAttributes\Attributes\Prefix;
 
 #[Group('统计', description: '数据统计看板', weight: 55)]
 #[Prefix('stats')]
+#[Middleware(['auth:sanctum'])]
 class StatsController extends Controller
 {
     #[Get('dashboard')]
-    public function dashboard(Request $request)
+    public function dashboard()
     {
         $stats = [
             'users' => User::count(),

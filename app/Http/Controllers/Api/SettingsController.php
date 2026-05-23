@@ -24,7 +24,6 @@ class SettingsController extends Controller
     #[Get('allSettings')]
     public function allSettings(Request $request)
     {
-        cache()->forget(config('settings.cache_key')); // 强制清除设置缓存
         $request->validate([
             /**
              * 设置项查询key，输入星号获取所有设置或者指定key：app,price,website
