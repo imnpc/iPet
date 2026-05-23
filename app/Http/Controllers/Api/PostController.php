@@ -9,6 +9,7 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Spatie\RouteAttributes\Attributes\Delete;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Post as RoutePost;
@@ -49,7 +50,10 @@ class PostController extends Controller
     {
         $validated = $request->validate([
             'content' => 'required|string|max:2000',
-            'pet_id' => 'nullable|exists:pets,id',
+            'pet_id' => [
+                'nullable',
+                Rule::exists('pets', 'id')->where(fn ($query) => $query->where('user_id', $request->user()->id)),
+            ],
             'location' => 'nullable|string|max:200',
             'visibility' => 'in:public,followers,private',
             'media' => 'nullable|array',

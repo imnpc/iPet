@@ -9,6 +9,7 @@ use App\Models\Post;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Spatie\RouteAttributes\Attributes\Delete;
 use Spatie\RouteAttributes\Attributes\Get;
 use Spatie\RouteAttributes\Attributes\Post as RoutePost;
@@ -39,7 +40,10 @@ class CommentController extends Controller
     {
         $validated = $request->validate([
             'post_id' => 'required|exists:posts,id',
-            'parent_id' => 'nullable|exists:comments,id',
+            'parent_id' => [
+                'nullable',
+                Rule::exists('comments', 'id')->where(fn ($query) => $query->where('post_id', $request->input('post_id'))),
+            ],
             'content' => 'required|string|max:1000',
         ]);
 
