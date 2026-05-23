@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Role;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
-/**
- * 角色模型授权策略。
- */
 class RolePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('viewAny_Role');
@@ -39,4 +36,5 @@ class RolePolicy
     {
         return $authUser->can('delete_Role');
     }
+
 }
