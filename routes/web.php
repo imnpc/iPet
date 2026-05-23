@@ -31,10 +31,19 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/pets/{pet}', [HomeController::class, 'petUpdate'])->name('pets.update');
     Route::delete('/pets/{pet}', [HomeController::class, 'petDestroy'])->name('pets.destroy');
 
+    Route::get('/pets/{pet}/records/create', [HomeController::class, 'petRecordCreate'])->name('pets.records.create');
+    Route::post('/pets/{pet}/records', [HomeController::class, 'petRecordStore'])->name('pets.records.store');
+    Route::get('/pets/{pet}/records/{record}/edit', [HomeController::class, 'petRecordEdit'])->name('pets.records.edit');
+    Route::put('/pets/{pet}/records/{record}', [HomeController::class, 'petRecordUpdate'])->name('pets.records.update');
+    Route::delete('/pets/{pet}/records/{record}', [HomeController::class, 'petRecordDestroy'])->name('pets.records.destroy');
+
     Route::get('/posts', [HomeController::class, 'posts'])->name('posts.index');
     Route::get('/posts/create', [HomeController::class, 'postCreate'])->name('posts.create');
     Route::post('/posts', [HomeController::class, 'postStore'])->name('posts.store');
     Route::get('/posts/{post}', [HomeController::class, 'postShow'])->name('posts.show');
+    Route::get('/posts/{post}/edit', [HomeController::class, 'postEdit'])->name('posts.edit');
+    Route::put('/posts/{post}', [HomeController::class, 'postUpdate'])->name('posts.update');
+    Route::delete('/posts/{post}', [HomeController::class, 'postDestroy'])->name('posts.destroy');
     Route::post('/posts/{post}/comments', [HomeController::class, 'commentStore'])->name('posts.comments.store');
     Route::post('/posts/{post}/like', [HomeController::class, 'postLike'])->name('posts.like');
     Route::post('/posts/{post}/comments/{comment}/like', [HomeController::class, 'commentLike'])->name('posts.comments.like');

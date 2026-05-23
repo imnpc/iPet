@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\ProcessVideoJob;
 use App\Models\Comment;
 use App\Models\Pet;
+use App\Models\PetRecord;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -82,7 +83,9 @@ class HomeController extends Controller
 
     public function petShow(Request $request, Pet $pet)
     {
-        $pet->load('records')->loadCount('posts');
+        $isOwner = $request->user()?->id === $pet->user_id;
+
+        $pet->loadCount('posts');
 
         $petPosts = $pet->posts()
             ->whereNotNull('published_at')
@@ -98,7 +101,15 @@ class HomeController extends Controller
             ]);
         }
 
-        return view('pets.show', compact('pet', 'petPosts'));
+        $petRecords = $pet->records()
+            ->when(! $isOwner, fn ($q) => $q->where('is_public', true))
+            ->orderBy('visit_date', 'desc')
+            ->paginate(5)
+            ->withQueryString();
+
+        $activeTab = $request->input('tab', 'posts');
+
+        return view('pets.show', compact('pet', 'petPosts', 'petRecords', 'isOwner', 'activeTab'));
     }
 
     public function petEdit(Request $request, Pet $pet)
@@ -146,6 +157,88 @@ class HomeController extends Controller
         return redirect()->route('pets.index')->with('success', '宠物已删除');
     }
 
+    public function petRecordCreate(Request $request, Pet $pet)
+    {
+        abort_unless($request->user()?->id === $pet->user_id, 403);
+
+        return view('pets.records.create', compact('pet'));
+    }
+
+    public function petRecordStore(Request $request, Pet $pet)
+    {
+        abort_unless($request->user()?->id === $pet->user_id, 403);
+
+        $validated = $request->validate([
+            'type' => 'required|in:vaccine,checkup,illness,medication,surgery,grooming,other',
+            'title' => 'required|string|max:200',
+            'visit_date' => 'required|date',
+            'next_visit_date' => 'nullable|date',
+            'hospital_name' => 'nullable|string|max:200',
+            'vet_name' => 'nullable|string|max:100',
+            'hospital_phone' => 'nullable|string|max:20',
+            'weight' => 'nullable|numeric',
+            'temperature' => 'nullable|numeric',
+            'symptoms' => 'nullable|string',
+            'diagnosis' => 'nullable|string',
+            'treatment' => 'nullable|string',
+            'prescription' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'cost' => 'nullable|numeric',
+            'is_public' => 'boolean',
+        ]);
+
+        $pet->records()->create($validated);
+
+        return redirect()->route('pets.show', $pet)->with('success', '医疗记录添加成功');
+    }
+
+    public function petRecordEdit(Request $request, Pet $pet, PetRecord $record)
+    {
+        abort_unless($request->user()?->id === $pet->user_id, 403);
+        abort_unless($record->pet_id === $pet->id, 404);
+
+        return view('pets.records.edit', compact('pet', 'record'));
+    }
+
+    public function petRecordUpdate(Request $request, Pet $pet, PetRecord $record)
+    {
+        abort_unless($request->user()?->id === $pet->user_id, 403);
+        abort_unless($record->pet_id === $pet->id, 404);
+
+        $validated = $request->validate([
+            'type' => 'sometimes|required|in:vaccine,checkup,illness,medication,surgery,grooming,other',
+            'title' => 'sometimes|required|string|max:200',
+            'visit_date' => 'sometimes|required|date',
+            'next_visit_date' => 'nullable|date',
+            'hospital_name' => 'nullable|string|max:200',
+            'vet_name' => 'nullable|string|max:100',
+            'hospital_phone' => 'nullable|string|max:20',
+            'weight' => 'nullable|numeric',
+            'temperature' => 'nullable|numeric',
+            'symptoms' => 'nullable|string',
+            'diagnosis' => 'nullable|string',
+            'treatment' => 'nullable|string',
+            'prescription' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'cost' => 'nullable|numeric',
+            'is_public' => 'boolean',
+        ]);
+
+        $record->update($validated);
+
+        return redirect()->route('pets.show', $pet)->with('success', '医疗记录更新成功');
+    }
+
+    public function petRecordDestroy(Request $request, Pet $pet, PetRecord $record)
+    {
+        abort_unless($request->user()?->id === $pet->user_id, 403);
+        abort_unless($record->pet_id === $pet->id, 404);
+
+        $record->delete();
+
+        return redirect()->route('pets.show', $pet)->with('success', '医疗记录已删除');
+    }
+
     public function petCreate()
     {
         return view('pets.create');
@@ -176,6 +269,60 @@ class HomeController extends Controller
         }
 
         return redirect()->route('pets.index')->with('success', '宠物添加成功');
+    }
+
+    public function postEdit(Request $request, Post $post)
+    {
+        abort_unless($request->user()?->id === $post->user_id, 403);
+
+        $pets = $request->user()->pets()->get();
+
+        return view('posts.edit', compact('post', 'pets'));
+    }
+
+    public function postUpdate(Request $request, Post $post)
+    {
+        abort_unless($request->user()?->id === $post->user_id, 403);
+
+        $validated = $request->validate([
+            'content' => 'required|string|max:2000',
+            'pet_id' => [
+                'nullable',
+                Rule::exists('pets', 'id')->where(fn ($query) => $query->where('user_id', $request->user()->id)),
+            ],
+            'location' => 'nullable|string|max:200',
+            'visibility' => 'in:public,followers,private',
+            'tags' => 'nullable|string',
+        ]);
+
+        if (! empty($validated['tags'])) {
+            $tagNames = array_filter(array_map('trim', explode(',', $validated['tags'])));
+            if (! empty($tagNames)) {
+                $post->syncTags($tagNames);
+            } else {
+                $post->detachTags($post->tags()->pluck('id')->toArray());
+            }
+        } else {
+            $post->detachTags($post->tags()->pluck('id')->toArray());
+        }
+
+        $post->update([
+            'content' => $validated['content'],
+            'pet_id' => $validated['pet_id'] ?? null,
+            'location' => $validated['location'] ?? null,
+            'visibility' => $validated['visibility'] ?? 'public',
+        ]);
+
+        return redirect()->route('posts.show', $post)->with('success', '动态更新成功');
+    }
+
+    public function postDestroy(Request $request, Post $post)
+    {
+        abort_unless($request->user()?->id === $post->user_id, 403);
+
+        $post->delete();
+
+        return redirect()->route('posts.index')->with('success', '动态已删除');
     }
 
     public function posts(Request $request)
