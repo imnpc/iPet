@@ -18,6 +18,8 @@ return [
         'wallet' => '钱包列表|钱包列表',
         'transaction' => '交易记录|交易记录',
         'pet' => '宠物|宠物',
+        'pet_species' => '宠物物种|宠物物种',
+        'pet_record_type' => '医疗记录类型|医疗记录类型',
         'pet_record' => '医疗记录|医疗记录',
         'post' => '动态|动态',
     ],
@@ -75,6 +77,12 @@ return [
             'notify_log' => '通知记录',
             'remark' => '备注',
         ],
+        'pet_species' => [
+            'name' => '名称',
+            'icon' => '图标',
+            'sort_order' => '排序',
+            'is_enabled' => '是否启用',
+        ],
         'pet' => [
             'species' => '物种',
             'breed' => '品种',
@@ -118,6 +126,13 @@ return [
                 'followers' => '粉丝可见',
                 'private' => '私密',
             ],
+        ],
+        'pet_record_type' => [
+            'name' => '名称',
+            'slug' => '标识',
+            'color' => '颜色',
+            'sort_order' => '排序',
+            'is_enabled' => '是否启用',
         ],
         'pet_record' => [
             'visit_date' => '就诊日期',
@@ -214,9 +229,17 @@ return [
             'label' => '宠物',
             'plural_label' => '宠物',
         ],
+        'pet_species' => [
+            'label' => '宠物物种',
+            'plural_label' => '宠物物种',
+        ],
         'pet_record' => [
             'label' => '医疗记录',
             'plural_label' => '医疗记录',
+        ],
+        'pet_record_type' => [
+            'label' => '医疗记录类型',
+            'plural_label' => '医疗记录类型',
         ],
         'post' => [
             'label' => '动态',
