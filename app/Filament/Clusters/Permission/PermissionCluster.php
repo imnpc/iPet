@@ -43,7 +43,7 @@ class PermissionCluster extends Cluster
      */
     public static function getNavigationSort(): ?int
     {
-        return 100;
+        return 30;
     }
 
     /**

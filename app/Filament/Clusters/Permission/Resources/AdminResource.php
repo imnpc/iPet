@@ -99,6 +99,6 @@ class AdminResource extends Resource implements Translateable
      */
     public static function getNavigationSort(): ?int
     {
-        return 1;
+        return 2;
     }
 }

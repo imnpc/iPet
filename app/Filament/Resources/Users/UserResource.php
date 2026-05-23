@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users;
 
+use App\Filament\Clusters\Permission\PermissionCluster;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -27,6 +28,11 @@ class UserResource extends Resource implements Translateable
     protected static ?string $translateablePackageKey = '';
 
     protected static ?string $model = User::class;
+
+    /**
+     * 集群
+     */
+    protected static ?string $cluster = PermissionCluster::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
@@ -63,10 +69,10 @@ class UserResource extends Resource implements Translateable
     /**
      * 导航组
      */
-    //    public static function getNavigationGroup(): ?string
-    //    {
-    //        return __('filament-model.navigation_group.user.name');
-    //    }
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament-model.navigation_group.user.name');
+    }
 
     /**
      * 导航徽章
