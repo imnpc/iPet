@@ -20,6 +20,7 @@ return new class extends Migration
             $table->index('sort_order');
             $table->index('is_enabled');
         });
+
     }
 
     public function down(): void
