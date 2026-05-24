@@ -82,4 +82,116 @@ class PostPublishMediaTest extends TestCase
         $response->assertSessionHasErrors('pet_id');
         $this->assertDatabaseCount('posts', 0);
     }
+
+    public function test_it_stores_selected_visibility_when_publishing_post(): void
+    {
+        $user = User::factory()->createOne();
+
+        /** @var Authenticatable $authUser */
+        $authUser = $user;
+
+        $response = $this->actingAs($authUser)->post(route('posts.store'), [
+            'content' => '仅粉丝可见动态',
+            'visibility' => 'followers',
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+
+        $this->assertDatabaseHas('posts', [
+            'user_id' => $user->id,
+            'content' => '仅粉丝可见动态',
+            'visibility' => 'followers',
+        ]);
+    }
+
+    public function test_it_can_append_media_when_updating_post_and_keep_published_at_unchanged(): void
+    {
+        $defaultDisk = config('filesystems.default');
+        Storage::fake($defaultDisk);
+
+        $user = User::factory()->createOne();
+        $post = Post::factory()->for($user)->createOne([
+            'published_at' => now()->subDay(),
+            'visibility' => 'public',
+        ]);
+
+        $originalPublishedAt = $post->published_at?->toDateTimeString();
+
+        /** @var Authenticatable $authUser */
+        $authUser = $user;
+
+        $response = $this->actingAs($authUser)->put(route('posts.update', $post), [
+            'content' => '更新后的内容',
+            'visibility' => 'private',
+            'published_at' => now()->addDay()->format('Y-m-d H:i:s'),
+            'image_files' => [
+                UploadedFile::fake()->image('update-first.jpg'),
+            ],
+            'video_files' => [
+                UploadedFile::fake()->create('update-demo.mp4', 500, 'video/mp4'),
+            ],
+        ]);
+
+        $response->assertRedirect(route('posts.show', $post));
+
+        $post->refresh();
+        $this->assertSame($originalPublishedAt, $post->published_at?->toDateTimeString());
+        $this->assertSame('private', $post->visibility);
+
+        $media = PostMedia::query()->where('post_id', $post->id)->orderBy('sort_order')->get();
+        $this->assertCount(2, $media);
+        $this->assertSame('image', $media[0]->type);
+        $this->assertSame('video', $media[1]->type);
+        $this->assertTrue(Storage::disk($defaultDisk)->exists($media[0]->path));
+        $this->assertTrue(Storage::disk($defaultDisk)->exists($media[1]->path));
+    }
+
+    public function test_it_can_delete_and_reorder_existing_media_when_updating_post(): void
+    {
+        $user = User::factory()->createOne();
+        $post = Post::factory()->for($user)->createOne([
+            'published_at' => now(),
+            'visibility' => 'public',
+        ]);
+
+        $first = $post->media()->create([
+            'type' => 'image',
+            'disk' => 'public',
+            'path' => 'posts/images/first.jpg',
+            'sort_order' => 0,
+        ]);
+
+        $second = $post->media()->create([
+            'type' => 'image',
+            'disk' => 'public',
+            'path' => 'posts/images/second.jpg',
+            'sort_order' => 1,
+        ]);
+
+        $third = $post->media()->create([
+            'type' => 'video',
+            'disk' => 'public',
+            'path' => 'posts/videos/third.mp4',
+            'sort_order' => 2,
+        ]);
+
+        /** @var Authenticatable $authUser */
+        $authUser = $user;
+
+        $response = $this->actingAs($authUser)->put(route('posts.update', $post), [
+            'content' => '调整媒体顺序并删除',
+            'visibility' => 'public',
+            'keep_media_ids' => [$second->id, $first->id],
+            'media_order' => [$second->id, $first->id],
+        ]);
+
+        $response->assertRedirect(route('posts.show', $post));
+
+        $sortedMedia = $post->media()->orderBy('sort_order')->get();
+        $this->assertCount(2, $sortedMedia);
+        $this->assertSame($second->id, $sortedMedia[0]->id);
+        $this->assertSame($first->id, $sortedMedia[1]->id);
+
+        $this->assertSoftDeleted('post_media', ['id' => $third->id]);
+    }
 }

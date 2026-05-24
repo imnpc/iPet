@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class HomeController extends Controller
@@ -292,6 +293,20 @@ class HomeController extends Controller
             ],
             'location' => 'nullable|string|max:200',
             'visibility' => 'in:public,followers,private',
+            'image_files' => 'nullable|array',
+            'image_files.*' => 'file|image|max:10240',
+            'video_files' => 'nullable|array',
+            'video_files.*' => 'file|mimetypes:video/mp4,video/quicktime,video/webm|max:102400',
+            'keep_media_ids' => 'nullable|array',
+            'keep_media_ids.*' => [
+                'integer',
+                Rule::exists('post_media', 'id')->where(fn ($query) => $query->where('post_id', $post->id)),
+            ],
+            'media_order' => 'nullable|array',
+            'media_order.*' => [
+                'integer',
+                Rule::exists('post_media', 'id')->where(fn ($query) => $query->where('post_id', $post->id)),
+            ],
             'tags' => 'nullable|string',
         ]);
 
@@ -312,6 +327,70 @@ class HomeController extends Controller
             'location' => $validated['location'] ?? null,
             'visibility' => $validated['visibility'] ?? 'public',
         ]);
+
+        $existingMedia = $post->media()->orderBy('sort_order')->get();
+        $keepMediaIds = collect($validated['keep_media_ids'] ?? [])->map(fn ($id) => (int) $id)->values();
+
+        if ($keepMediaIds->isEmpty()) {
+            $keepMediaIds = $existingMedia->pluck('id')->map(fn ($id) => (int) $id)->values();
+        }
+
+        $mediaToDelete = $existingMedia->whereNotIn('id', $keepMediaIds);
+        foreach ($mediaToDelete as $mediaItem) {
+            if (! empty($mediaItem->path)) {
+                Storage::disk($mediaItem->disk)->delete($mediaItem->path);
+            }
+
+            if (! empty($mediaItem->thumbnail_path)) {
+                Storage::disk($mediaItem->disk)->delete($mediaItem->thumbnail_path);
+            }
+
+            $mediaItem->delete();
+        }
+
+        $orderSource = collect($validated['media_order'] ?? [])->map(fn ($id) => (int) $id)->values();
+        $orderedMediaIds = $orderSource->filter(fn ($id) => $keepMediaIds->contains($id))->values();
+        $missingMediaIds = $keepMediaIds->diff($orderedMediaIds)->values();
+        $finalOrderedMediaIds = $orderedMediaIds->merge($missingMediaIds)->values();
+
+        foreach ($finalOrderedMediaIds as $sortOrder => $mediaId) {
+            $post->media()->where('id', $mediaId)->update(['sort_order' => $sortOrder]);
+        }
+
+        $sortOrder = (int) $post->media()->max('sort_order') + 1;
+        $defaultDisk = config('filesystems.default');
+
+        if ($request->hasFile('image_files')) {
+            foreach ($request->file('image_files') as $imageFile) {
+                $path = $imageFile->store('posts/images');
+
+                $post->media()->create([
+                    'type' => 'image',
+                    'disk' => $defaultDisk,
+                    'path' => $path,
+                    'mime_type' => $imageFile->getClientMimeType(),
+                    'size' => $imageFile->getSize(),
+                    'sort_order' => $sortOrder++,
+                ]);
+            }
+        }
+
+        if ($request->hasFile('video_files')) {
+            foreach ($request->file('video_files') as $videoFile) {
+                $path = $videoFile->store('posts/videos');
+
+                $media = $post->media()->create([
+                    'type' => 'video',
+                    'disk' => $defaultDisk,
+                    'path' => $path,
+                    'mime_type' => $videoFile->getClientMimeType(),
+                    'size' => $videoFile->getSize(),
+                    'sort_order' => $sortOrder++,
+                ]);
+
+                ProcessVideoJob::dispatch($media);
+            }
+        }
 
         return redirect()->route('posts.show', $post)->with('success', '动态更新成功');
     }
