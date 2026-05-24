@@ -8,21 +8,18 @@ use App\Models\WalletType;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 
-/**
- * 钱包类型授权策略。
- */
 class WalletTypePolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('viewAny_WalletType');
-    }
-
     public function view(AuthUser $authUser, WalletType $walletType): bool
     {
         return $authUser->can('view_WalletType');
+    }
+
+    public function viewAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('viewAny_WalletType');
     }
 
     public function create(AuthUser $authUser): bool
@@ -38,36 +35,6 @@ class WalletTypePolicy
     public function delete(AuthUser $authUser, WalletType $walletType): bool
     {
         return $authUser->can('delete_WalletType');
-    }
-
-    public function restore(AuthUser $authUser, WalletType $walletType): bool
-    {
-        return $authUser->can('restore_WalletType');
-    }
-
-    public function forceDelete(AuthUser $authUser, WalletType $walletType): bool
-    {
-        return $authUser->can('forceDelete_WalletType');
-    }
-
-    public function forceDeleteAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('forceDeleteAny_WalletType');
-    }
-
-    public function restoreAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('restoreAny_WalletType');
-    }
-
-    public function replicate(AuthUser $authUser, WalletType $walletType): bool
-    {
-        return $authUser->can('replicate_WalletType');
-    }
-
-    public function reorder(AuthUser $authUser): bool
-    {
-        return $authUser->can('reorder_WalletType');
     }
 
     public function deleteAny(AuthUser $authUser): bool
