@@ -36,6 +36,18 @@ class PetSpeciesResource extends Resource implements Translateable
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    protected static ?int $navigationSort = 20;
+
+    public static function getNavigationParentItem(): ?string
+    {
+        return null;
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return null;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

@@ -14,7 +14,7 @@ class PetCluster extends Cluster
 
     public static function getClusterBreadcrumb(): string
     {
-        return __('filament-model.navigation_group.pet.name');
+        return '宠物';
     }
 
     public static function getNavigationIcon(): BackedEnum|Htmlable|string|null
@@ -24,16 +24,16 @@ class PetCluster extends Cluster
 
     public static function getNavigationLabel(): string
     {
-        return __('filament-model.navigation_group.pet.name');
+        return '宠物';
     }
 
     public static function getNavigationSort(): ?int
     {
-        return 15;
+        return 11;
     }
 
     public function getTitle(): string
     {
-        return __('filament-model.navigation_group.pet.name');
+        return '宠物';
     }
 }

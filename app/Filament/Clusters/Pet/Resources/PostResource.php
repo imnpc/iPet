@@ -2,10 +2,10 @@
 
 namespace App\Filament\Clusters\Pet\Resources;
 
-use App\Filament\Clusters\Pet\PetCluster;
 use App\Filament\Clusters\Pet\Resources\PostResource\Pages\CreatePost;
 use App\Filament\Clusters\Pet\Resources\PostResource\Pages\EditPost;
 use App\Filament\Clusters\Pet\Resources\PostResource\Pages\ListPosts;
+use App\Filament\Clusters\PostCluster;
 use App\Models\Post;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -36,7 +36,7 @@ class PostResource extends Resource implements Translateable
 
     protected static ?string $model = Post::class;
 
-    protected static ?string $cluster = PetCluster::class;
+    protected static ?string $cluster = PostCluster::class;
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 

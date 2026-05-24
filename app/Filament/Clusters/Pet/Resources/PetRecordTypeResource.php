@@ -2,7 +2,7 @@
 
 namespace App\Filament\Clusters\Pet\Resources;
 
-use App\Filament\Clusters\Pet\PetCluster;
+use App\Filament\Clusters\MedicalCluster;
 use App\Filament\Clusters\Pet\Resources\PetRecordTypeResource\Pages\CreatePetRecordType;
 use App\Filament\Clusters\Pet\Resources\PetRecordTypeResource\Pages\EditPetRecordType;
 use App\Filament\Clusters\Pet\Resources\PetRecordTypeResource\Pages\ListPetRecordTypes;
@@ -30,7 +30,7 @@ class PetRecordTypeResource extends Resource implements Translateable
 
     protected static ?string $model = PetRecordType::class;
 
-    protected static ?string $cluster = PetCluster::class;
+    protected static ?string $cluster = MedicalCluster::class;
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
