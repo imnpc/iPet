@@ -34,12 +34,13 @@
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_minmax(0,1fr)_260px] lg:gap-5">
         <aside class="hidden lg:block">
-            <div class="sticky top-20 ui-card ui-card-shadow p-4">
-                <h2 class="mb-3 text-sm font-bold text-warm-900">快捷入口</h2>
+            <div class="sticky top-20 ui-card ui-card-shadow p-4 overflow-hidden" style="border-radius: 1rem;">
+                <div class="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary-100 to-accent-100 opacity-60"></div>
+                <h2 class="relative mb-3 text-sm font-bold text-warm-900">快捷入口</h2>
                 <div class="space-y-2 text-sm">
-                    <a href="{{ route('posts.index') }}" class="flex items-center gap-2 rounded-lg bg-primary-50 px-3 py-2 font-semibold text-primary-700">🏠 全部动态</a>
-                    <a href="{{ route('pets.index') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-warm-700 hover:bg-warm-100">🐾 我的宠物</a>
-                    <a href="{{ route('posts.create') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-warm-700 hover:bg-warm-100">✍️ 发动态</a>
+                    <a href="{{ route('posts.index') }}" class="flex items-center gap-2 rounded-lg bg-primary-50 px-3 py-2 font-semibold text-primary-700 transition-colors hover:bg-primary-100">🏠 全部动态</a>
+                    <a href="{{ route('pets.index') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-warm-700 transition-colors hover:bg-warm-100">🐾 我的宠物</a>
+                    <a href="{{ route('posts.create') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-warm-700 transition-colors hover:bg-warm-100">✍️ 发动态</a>
                 </div>
             </div>
         </aside>
@@ -149,20 +150,22 @@
 
         <aside class="hidden lg:block">
             <div class="sticky top-20 space-y-4">
-                <div class="ui-card ui-card-shadow p-4">
-                    <h3 class="mb-3 text-sm font-bold text-warm-900">热门物种</h3>
+                <div class="ui-card ui-card-shadow p-4 overflow-hidden" style="border-radius: 1rem;">
+                    <div class="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary-100 to-accent-100 opacity-60"></div>
+                    <h3 class="relative mb-3 text-sm font-bold text-warm-900">热门物种</h3>
                     <div class="space-y-2 text-sm">
                         @foreach($speciesFilters->take(8) as $index => $species)
-                            <a href="{{ route('posts.index', array_merge(request()->except(['species', 'page']), ['species' => $species])) }}" class="flex items-center justify-between rounded-lg px-2.5 py-2 text-warm-700 hover:bg-warm-100">
+                            <a href="{{ route('posts.index', array_merge(request()->except(['species', 'page']), ['species' => $species])) }}" class="flex items-center justify-between rounded-lg px-2.5 py-2 text-warm-700 transition-colors hover:bg-warm-100">
                                 <span>{{ $species }}</span>
-                                <span class="text-xs text-warm-400">#{{ $index + 1 }}</span>
+                                <span class="rounded-full bg-warm-100 px-2 py-0.5 text-xs font-medium text-warm-400">#{{ $index + 1 }}</span>
                             </a>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="ui-card ui-card-shadow p-4">
-                    <h3 class="mb-3 text-sm font-bold text-warm-900">使用提示</h3>
+                <div class="ui-card ui-card-shadow p-4 overflow-hidden" style="border-radius: 1rem;">
+                    <div class="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-gradient-to-br from-accent-100 to-primary-100 opacity-60"></div>
+                    <h3 class="relative mb-3 text-sm font-bold text-warm-900">使用提示</h3>
                     <ul class="space-y-2 text-xs leading-5 text-warm-500">
                         <li>· 左侧是功能入口，右侧是热点导航</li>
                         <li>· 中间按时间流展示所有动态</li>

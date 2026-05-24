@@ -9,14 +9,15 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_minmax(0,1fr)_260px] lg:gap-5">
         <aside class="hidden lg:block">
-            <div class="sticky top-20 ui-card ui-card-shadow p-4">
-                <h2 class="mb-3 text-sm font-bold text-warm-900">快捷入口</h2>
+            <div class="sticky top-20 ui-card ui-card-shadow p-4 overflow-hidden" style="border-radius: 1rem;">
+                <div class="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary-100 to-accent-100 opacity-60"></div>
+                <h2 class="relative mb-3 text-sm font-bold text-warm-900">快捷入口</h2>
                 <div class="space-y-2 text-sm">
-                    <a href="{{ route('posts.index') }}" class="flex items-center gap-2 rounded-lg bg-primary-50 px-3 py-2 font-semibold text-primary-700">🏠 动态广场</a>
+                    <a href="{{ route('posts.index') }}" class="flex items-center gap-2 rounded-lg bg-primary-50 px-3 py-2 font-semibold text-primary-700 transition-colors hover:bg-primary-100">🏠 动态广场</a>
                     @if($post->pet)
-                        <a href="{{ route('pets.show', $post->pet) }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-warm-700 hover:bg-warm-100">🐾 {{ $post->pet->name }}</a>
+                        <a href="{{ route('pets.show', $post->pet) }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-warm-700 transition-colors hover:bg-warm-100">🐾 {{ $post->pet->name }}</a>
                     @endif
-                    <a href="{{ route('posts.create') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-warm-700 hover:bg-warm-100">✍️ 发布动态</a>
+                    <a href="{{ route('posts.create') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-warm-700 transition-colors hover:bg-warm-100">✍️ 发布动态</a>
                 </div>
             </div>
         </aside>
@@ -29,8 +30,46 @@
                 </a>
             </div>
 
-            <div class="ui-card ui-card-shadow-strong overflow-hidden mb-8 animate-fade-in-up">
-        <div class="p-6">
+            <!-- 动态头部装饰 -->
+            <div class="ui-card ui-card-shadow-strong overflow-hidden mb-8 animate-fade-in-up" style="border-radius: 1.5rem;">
+                <div class="h-32 bg-gradient-to-br from-primary-100 via-primary-50 to-accent-50 relative">
+                    @if($post->pet?->avatar)
+                        <img src="{{ $post->pet->avatar }}" alt="{{ $post->pet->name }}" class="w-full h-full object-cover opacity-50">
+                    @else
+                        <div class="absolute inset-0 flex items-center justify-center opacity-20">
+                            <svg class="w-32 h-32 text-primary-300/40" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4.5 9.5a2 2 0 110-4 2 2 0 010 4zM9 7a2 2 0 110-4 2 2 0 010 4zM15 7a2 2 0 110-4 2 2 0 010 4zM19.5 9.5a2 2 0 110-4 2 2 0 010 4zM6 14c0 2.5 2 4.5 6 4.5s6-2 6-4.5c0-1.5-1-2.5-2-3-1-.5-2.5-.5-4-.5s-3 0-4 .5c-1 .5-2 1.5-2 3z"/>
+                            </svg>
+                        </div>
+                    @endif
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <div class="flex items-center gap-3">
+                            @if($post->pet)
+                                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg ring-2 ring-white/50">
+                                    @if($post->pet->avatar)
+                                        <img src="{{ $post->pet->avatar }}" alt="{{ $post->pet->name }}" class="h-full w-full rounded-full object-cover">
+                                    @else
+                                        <div class="h-8 w-8 rounded-full bg-gradient-to-br from-primary-100 to-accent-100"></div>
+                                    @endif
+                                </div>
+                                <div>
+                                    <h2 class="text-2xl font-display font-bold text-white drop-shadow-lg">{{ $post->pet->name }}</h2>
+                                    <p class="text-white/90 text-sm font-medium">{{ $speciesLabel }} · {{ $post->created_at->format('Y-m-d H:i') }}</p>
+                                </div>
+                            @else
+                                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg ring-2 ring-white/50">
+                                    <div class="h-8 w-8 rounded-full bg-gradient-to-br from-primary-100 to-accent-100"></div>
+                                </div>
+                                <div>
+                                    <h2 class="text-2xl font-display font-bold text-white drop-shadow-lg">动态详情</h2>
+                                    <p class="text-white/90 text-sm font-medium">{{ $post->created_at->format('Y-m-d H:i') }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6">
             <x-post-header :post="$post" :species-label="$speciesLabel" :show-pet-link="true" />
 
             <x-post-content :content="$post->content" />
@@ -81,17 +120,19 @@
 
         <aside class="hidden lg:block">
             <div class="sticky top-20 space-y-4">
-                <div class="ui-card ui-card-shadow p-4">
-                    <h3 class="mb-3 text-sm font-bold text-warm-900">动态信息</h3>
+                <div class="ui-card ui-card-shadow p-4 overflow-hidden" style="border-radius: 1rem;">
+                    <div class="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary-100 to-accent-100 opacity-60"></div>
+                    <h3 class="relative mb-3 text-sm font-bold text-warm-900">动态信息</h3>
                     <ul class="space-y-2 text-xs text-warm-500">
                         <li>· 物种：{{ $speciesLabel }}</li>
                         <li>· 发布时间：{{ $post->created_at->diffForHumans() }}</li>
                         <li>· 评论数：{{ $post->comment_count }}</li>
                     </ul>
                 </div>
-                <div class="ui-card ui-card-shadow p-4">
-                    <h3 class="mb-3 text-sm font-bold text-warm-900">浏览建议</h3>
-                    <ul class="space-y-2 text-xs text-warm-500">
+                <div class="ui-card ui-card-shadow p-4 overflow-hidden" style="border-radius: 1rem;">
+                    <div class="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-gradient-to-br from-accent-100 to-primary-100 opacity-60"></div>
+                    <h3 class="relative mb-3 text-sm font-bold text-warm-900">浏览建议</h3>
+                    <ul class="space-y-2 text-xs leading-5 text-warm-500">
                         <li>· 先看正文，再看图文或视频</li>
                         <li>· 下方评论区支持楼中楼回复</li>
                         <li>· 可回到广场继续刷新动态</li>
