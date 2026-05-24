@@ -69,8 +69,19 @@
                     </div>
                 </div>
 
-                <div class="p-6">
-            <x-post-header :post="$post" :species-label="$speciesLabel" :show-pet-link="true" />
+        <div class="p-6">
+            <div class="mb-4 flex items-start justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                    <x-post-header :post="$post" :species-label="$speciesLabel" :show-pet-link="true" />
+                </div>
+
+                @if(auth()->check() && auth()->id() === $post->user_id)
+                    <a href="{{ route('posts.edit', $post) }}" class="inline-flex shrink-0 items-center gap-1 rounded-lg bg-warm-100 px-3 py-1.5 text-xs font-medium text-warm-700 transition-colors hover:bg-primary-100 hover:text-primary-700">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        编辑
+                    </a>
+                @endif
+            </div>
 
             <x-post-content :content="$post->content" />
 
