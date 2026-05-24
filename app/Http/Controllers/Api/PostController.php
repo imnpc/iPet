@@ -38,8 +38,7 @@ class PostController extends Controller
             $query->withAnyTags([$request->input('tag')]);
         }
 
-        $posts = $query->orderBy('is_pinned', 'desc')
-            ->orderBy('published_at', 'desc')
+        $posts = $query->orderByPublishedAtDesc()
             ->paginate($request->input('per_page', 20));
 
         return $this->success(PostResource::collection($posts));

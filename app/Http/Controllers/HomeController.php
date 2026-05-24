@@ -11,6 +11,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 
 class HomeController extends Controller
@@ -52,8 +53,7 @@ class HomeController extends Controller
             });
         }
 
-        $posts = $query->orderBy('is_pinned', 'desc')
-            ->orderBy('published_at', 'desc')
+        $posts = $query->orderByPublishedAtDesc()
             ->when(
                 $request->user() instanceof User,
                 fn ($postQuery) => $postQuery->withExists([
@@ -89,9 +89,8 @@ class HomeController extends Controller
         $pet->loadCount('posts');
 
         $petPosts = $pet->posts()
-            ->whereNotNull('published_at')
-            ->latest('published_at')
-            ->latest('id')
+            ->published()
+            ->orderByPublishedAtDesc()
             ->with(['user', 'pet', 'media', 'tags'])
             ->paginate(5)
             ->withQueryString();
@@ -363,8 +362,7 @@ class HomeController extends Controller
             });
         }
 
-        $posts = $query->orderBy('is_pinned', 'desc')
-            ->orderBy('published_at', 'desc')
+        $posts = $query->orderByPublishedAtDesc()
             ->when(
                 $request->user() instanceof User,
                 fn ($postQuery) => $postQuery->withExists([
@@ -397,6 +395,16 @@ class HomeController extends Controller
 
     public function postShow(Request $request, Post $post)
     {
+        $viewDeduplicateMinutes = max((int) config('app.post_view_deduplicate_minutes', 10), 1);
+        $viewerFingerprint = $request->user() instanceof User
+            ? 'user:'.$request->user()->id
+            : 'guest:'.sha1(($request->ip() ?? 'unknown').'|'.($request->userAgent() ?? 'unknown'));
+        $viewCacheKey = sprintf('post:viewed:%d:%s', $post->id, $viewerFingerprint);
+
+        if (Cache::add($viewCacheKey, true, now()->addMinutes($viewDeduplicateMinutes))) {
+            $post->increment('view_count');
+        }
+
         $commentSort = $request->string('comment_sort')->value();
         $commentSort = in_array($commentSort, ['hot', 'time'], true) ? $commentSort : 'time';
 
@@ -446,7 +454,7 @@ class HomeController extends Controller
     {
         $posts = $user->posts()
             ->with(['pet', 'media', 'tags'])
-            ->whereNotNull('published_at')
+            ->published()
             ->where('visibility', 'public')
             ->when(
                 request()->user() instanceof User,
@@ -454,7 +462,7 @@ class HomeController extends Controller
                     'likes as is_liked' => fn ($likeQuery) => $likeQuery->where('user_id', request()->user()->id),
                 ]),
             )
-            ->orderBy('published_at', 'desc')
+            ->orderByPublishedAtDesc()
             ->paginate(12);
 
         return view('users.show', compact('user', 'posts'));

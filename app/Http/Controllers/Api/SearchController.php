@@ -32,12 +32,12 @@ class SearchController extends Controller
         if (in_array($type, ['all', 'posts'])) {
             $posts = Post::with(['user', 'pet', 'media'])
                 ->where('visibility', 'public')
-                ->whereNotNull('published_at')
+                ->published()
                 ->where(function ($q) use ($query) {
                     $q->where('content', 'like', "%{$query}%")
                         ->orWhere('location', 'like', "%{$query}%");
                 })
-                ->orderBy('published_at', 'desc')
+                ->orderByPublishedAtDesc()
                 ->limit(20)
                 ->get();
 

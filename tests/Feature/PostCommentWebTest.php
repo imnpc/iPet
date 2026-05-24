@@ -10,6 +10,67 @@ use Tests\TestCase;
 
 class PostCommentWebTest extends TestCase
 {
+    public function test_post_view_count_increases_when_opening_post_show_page(): void
+    {
+        $viewer = User::factory()->createOne();
+        $author = User::factory()->createOne();
+        $post = Post::factory()->for($author)->createOne([
+            'published_at' => now(),
+            'visibility' => 'public',
+            'pet_id' => null,
+            'view_count' => 0,
+        ]);
+
+        /** @var Authenticatable $authUser */
+        $authUser = $viewer;
+
+        $this->actingAs($authUser)
+            ->get(route('posts.show', $post))
+            ->assertOk();
+
+        $this->assertDatabaseHas('posts', [
+            'id' => $post->id,
+            'view_count' => 1,
+        ]);
+    }
+
+    public function test_post_view_count_is_deduplicated_within_minutes_for_same_user(): void
+    {
+        config()->set('app.post_view_deduplicate_minutes', 10);
+
+        $viewer = User::factory()->createOne();
+        $author = User::factory()->createOne();
+        $post = Post::factory()->for($author)->createOne([
+            'published_at' => now(),
+            'visibility' => 'public',
+            'pet_id' => null,
+            'view_count' => 0,
+        ]);
+
+        /** @var Authenticatable $authUser */
+        $authUser = $viewer;
+
+        $this->actingAs($authUser)
+            ->get(route('posts.show', $post))
+            ->assertOk();
+
+        $this->actingAs($authUser)
+            ->get(route('posts.show', $post))
+            ->assertOk();
+
+        $post->refresh();
+        $this->assertSame(1, $post->view_count);
+
+        $this->travel(11)->minutes();
+
+        $this->actingAs($authUser)
+            ->get(route('posts.show', $post))
+            ->assertOk();
+
+        $post->refresh();
+        $this->assertSame(2, $post->view_count);
+    }
+
     public function test_authenticated_user_can_publish_comment_from_post_show_page(): void
     {
         $user = User::factory()->createOne();

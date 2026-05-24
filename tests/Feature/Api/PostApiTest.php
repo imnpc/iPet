@@ -18,6 +18,31 @@ class PostApiTest extends TestCase
         $response->assertOk()->assertJsonPath('status', 'success');
     }
 
+    public function test_posts_are_sorted_by_published_at_desc(): void
+    {
+        $olderPinnedPost = Post::factory()->create([
+            'content' => '置顶但更早',
+            'visibility' => 'public',
+            'is_pinned' => true,
+            'pet_id' => null,
+            'published_at' => now()->subDay(),
+        ]);
+
+        $newerPost = Post::factory()->create([
+            'content' => '最新动态',
+            'visibility' => 'public',
+            'is_pinned' => false,
+            'pet_id' => null,
+            'published_at' => now(),
+        ]);
+
+        $response = $this->getJson('/api/v1/posts');
+
+        $response->assertOk()
+            ->assertJsonPath('data.0.id', $newerPost->id)
+            ->assertJsonPath('data.1.id', $olderPinnedPost->id);
+    }
+
     public function test_can_create_a_post(): void
     {
         $user = User::factory()->create();

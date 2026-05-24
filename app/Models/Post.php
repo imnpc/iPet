@@ -46,6 +46,12 @@ class Post extends Model
         return $query->whereNotNull('published_at');
     }
 
+    public function scopeOrderByPublishedAtDesc(Builder $query): Builder
+    {
+        return $query->orderByDesc('published_at')
+            ->orderByDesc('id');
+    }
+
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
         return $query->where(function (Builder $query) use ($user): void {
