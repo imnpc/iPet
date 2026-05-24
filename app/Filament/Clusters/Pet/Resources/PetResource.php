@@ -61,6 +61,7 @@ class PetResource extends Resource implements Translateable
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(trans('filament-model.general.name'))
                     ->required()
                     ->maxLength(50),
                 Select::make('pet_species_id')
@@ -108,6 +109,7 @@ class PetResource extends Resource implements Translateable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label(trans('filament-model.general.name'))
                     ->searchable(),
                 TextColumn::make('species.name')
                     ->label(trans('filament-model.attributes.pet.species')),
@@ -115,6 +117,7 @@ class PetResource extends Resource implements Translateable
                     ->label(trans('filament-model.attributes.pet.breed')),
 
                 TextColumn::make('gender')
+                    ->label(trans('filament-model.attributes.pet.gender'))
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'male' => trans('filament-model.attributes.pet.gender_options.male'),
                         'female' => trans('filament-model.attributes.pet.gender_options.female'),
@@ -127,6 +130,7 @@ class PetResource extends Resource implements Translateable
                     ->label(trans('filament-model.attributes.pet.is_default_table')),
 
                 TextColumn::make('status')
+                    ->label(trans('filament-model.general.status'))
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'active' => trans('filament-model.attributes.pet.status_options.active'),
@@ -143,6 +147,7 @@ class PetResource extends Resource implements Translateable
                     ->counts('posts')
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label(trans('filament-model.general.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])

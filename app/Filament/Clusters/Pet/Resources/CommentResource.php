@@ -60,7 +60,7 @@ class CommentResource extends Resource implements Translateable
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('ID')
+                    ->label(trans('filament-model.general.id'))
                     ->sortable(),
                 TextColumn::make('user.name')
                     ->label(trans('filament-model.attributes.comment.author'))

@@ -100,8 +100,8 @@ class PetRecordResource extends Resource implements Translateable
                     ->numeric()
                     ->prefix('¥'),
                 Toggle::make('is_public')
-                    ->label('是否公开')
-                    ->helperText('开启后其他用户也可查看此记录')
+                    ->label(trans('filament-model.attributes.pet_record.is_public'))
+                    ->helperText(trans('filament-model.attributes.pet_record.is_public_help'))
                     ->default(false),
             ]);
     }
@@ -115,14 +115,19 @@ class PetRecordResource extends Resource implements Translateable
                 TextColumn::make('type.name')
                     ->label(trans('filament-model.general.type')),
                 TextColumn::make('title')
+                    ->label(trans('filament-model.general.name'))
                     ->searchable(),
                 TextColumn::make('visit_date')
+                    ->label(trans('filament-model.attributes.pet_record.visit_date'))
                     ->date(),
                 TextColumn::make('weight')
+                    ->label(trans('filament-model.attributes.pet_record.weight'))
                     ->numeric(decimalPlaces: 2)
                     ->suffix('kg'),
-                TextColumn::make('hospital_name'),
+                TextColumn::make('hospital_name')
+                    ->label(trans('filament-model.attributes.pet_record.hospital_name')),
                 TextColumn::make('created_at')
+                    ->label(trans('filament-model.general.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])

@@ -41,17 +41,22 @@ class PetRecordTypeResource extends Resource implements Translateable
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(trans('filament-model.attributes.pet_record_type.name'))
                     ->required()
                     ->maxLength(50),
                 TextInput::make('slug')
+                    ->label(trans('filament-model.attributes.pet_record_type.slug'))
                     ->required()
                     ->maxLength(30),
                 TextInput::make('color')
+                    ->label(trans('filament-model.attributes.pet_record_type.color'))
                     ->maxLength(20),
                 TextInput::make('sort_order')
+                    ->label(trans('filament-model.attributes.pet_record_type.sort_order'))
                     ->numeric()
                     ->default(0),
                 Toggle::make('is_enabled')
+                    ->label(trans('filament-model.attributes.pet_record_type.is_enabled'))
                     ->default(true),
             ]);
     }
@@ -61,14 +66,22 @@ class PetRecordTypeResource extends Resource implements Translateable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label(trans('filament-model.attributes.pet_record_type.name'))
                     ->searchable(),
-                TextColumn::make('slug'),
-                TextColumn::make('color'),
+                TextColumn::make('slug')
+                    ->label(trans('filament-model.attributes.pet_record_type.slug')),
+
+                TextColumn::make('color')
+                    ->label(trans('filament-model.attributes.pet_record_type.color')),
+
                 TextColumn::make('sort_order')
+                    ->label(trans('filament-model.attributes.pet_record_type.sort_order'))
                     ->sortable(),
                 IconColumn::make('is_enabled')
+                    ->label(trans('filament-model.attributes.pet_record_type.is_enabled'))
                     ->boolean(),
                 TextColumn::make('created_at')
+                    ->label(trans('filament-model.general.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])

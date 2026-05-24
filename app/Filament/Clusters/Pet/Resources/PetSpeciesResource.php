@@ -53,14 +53,18 @@ class PetSpeciesResource extends Resource implements Translateable
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(trans('filament-model.attributes.pet_species.name'))
                     ->required()
                     ->maxLength(50),
                 TextInput::make('icon')
+                    ->label(trans('filament-model.attributes.pet_species.icon'))
                     ->maxLength(255),
                 TextInput::make('sort_order')
+                    ->label(trans('filament-model.attributes.pet_species.sort_order'))
                     ->numeric()
                     ->default(0),
                 Toggle::make('is_enabled')
+                    ->label(trans('filament-model.attributes.pet_species.is_enabled'))
                     ->default(true),
             ]);
     }
@@ -70,13 +74,19 @@ class PetSpeciesResource extends Resource implements Translateable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label(trans('filament-model.attributes.pet_species.name'))
                     ->searchable(),
-                TextColumn::make('icon'),
+                TextColumn::make('icon')
+                    ->label(trans('filament-model.attributes.pet_species.icon')),
+
                 TextColumn::make('sort_order')
+                    ->label(trans('filament-model.attributes.pet_species.sort_order'))
                     ->sortable(),
                 IconColumn::make('is_enabled')
+                    ->label(trans('filament-model.attributes.pet_species.is_enabled'))
                     ->boolean(),
                 TextColumn::make('created_at')
+                    ->label(trans('filament-model.general.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])

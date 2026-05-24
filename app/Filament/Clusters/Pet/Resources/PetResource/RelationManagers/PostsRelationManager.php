@@ -66,8 +66,10 @@ class PostsRelationManager extends RelationManager
             ->recordTitleAttribute('content')
             ->columns([
                 TextColumn::make('content')
+                    ->label(trans('filament-model.attributes.post.content'))
                     ->limit(50),
                 TextColumn::make('visibility')
+                    ->label(trans('filament-model.attributes.post.visibility'))
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'public' => trans('filament-model.attributes.post.visibility_options.public'),
@@ -81,6 +83,7 @@ class PostsRelationManager extends RelationManager
                 TextColumn::make('like_count')
                     ->label(trans('filament-model.attributes.post.like_count')),
                 TextColumn::make('created_at')
+                    ->label(trans('filament-model.general.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])

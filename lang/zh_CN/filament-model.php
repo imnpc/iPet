@@ -13,8 +13,8 @@ return [
         'user' => '用户|用户',
         'activity_log' => '操作日志|操作日志',
         'user_wallet_log' => '钱包日志|钱包日志',
-        'recharge' => ' 充值记录|充值记录',
-        'pay_log' => ' 支付记录|支付记录',
+        'recharge' => '充值记录|充值记录',
+        'pay_log' => '支付记录|支付记录',
         'wallet' => '钱包列表|钱包列表',
         'transaction' => '交易记录|交易记录',
         'pet' => '宠物|宠物',
@@ -23,6 +23,7 @@ return [
         'pet_record' => '医疗记录|医疗记录',
         'post' => '动态|动态',
         'comment' => '评论|评论',
+        'role' => '角色|角色',
     ],
 
     /*
@@ -135,13 +136,6 @@ return [
             'content' => '评论内容',
             'like_count' => '点赞数',
         ],
-        'comment' => [
-            'author' => '评论者',
-            'post' => '动态',
-            'parent' => '父评论',
-            'content' => '评论内容',
-            'like_count' => '点赞数',
-        ],
         'pet_record_type' => [
             'name' => '名称',
             'slug' => '标识',
@@ -162,6 +156,8 @@ return [
             'treatment' => '治疗方案',
             'prescription' => '处方',
             'cost' => '费用',
+            'is_public' => '是否公开',
+            'is_public_help' => '开启后其他用户也可查看此记录',
             'type_options' => [
                 'vaccine' => '疫苗',
                 'checkup' => '体检',
@@ -254,6 +250,14 @@ return [
             'label' => '支付记录',
             'plural_label' => '支付记录',
         ],
+        'transaction' => [
+            'label' => '交易记录',
+            'plural_label' => '交易记录',
+        ],
+        'role' => [
+            'label' => '角色',
+            'plural_label' => '角色',
+        ],
         'pet' => [
             'label' => '宠物',
             'plural_label' => '宠物',
@@ -273,10 +277,6 @@ return [
         'post' => [
             'label' => '动态',
             'plural_label' => '动态',
-        ],
-        'comment' => [
-            'label' => '评论',
-            'plural_label' => '评论',
         ],
         'comment' => [
             'label' => '评论',

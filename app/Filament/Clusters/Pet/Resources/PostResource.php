@@ -92,6 +92,7 @@ class PostResource extends Resource implements Translateable
                 TextColumn::make('pet.name')
                     ->label(trans('filament-model.attributes.post.related_pet')),
                 TextColumn::make('visibility')
+                    ->label(trans('filament-model.attributes.post.visibility'))
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'public' => trans('filament-model.attributes.post.visibility_options.public'),
@@ -107,6 +108,7 @@ class PostResource extends Resource implements Translateable
                 SpatieTagsColumn::make('tags')
                     ->label(trans('filament-model.general.tags')),
                 TextColumn::make('created_at')
+                    ->label(trans('filament-model.general.created_at'))
                     ->dateTime()
                     ->sortable(),
             ])
