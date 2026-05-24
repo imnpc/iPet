@@ -22,6 +22,7 @@ return [
         'pet_record_type' => '医疗记录类型|医疗记录类型',
         'pet_record' => '医疗记录|医疗记录',
         'post' => '动态|动态',
+        'comment' => '评论|评论',
     ],
 
     /*
@@ -127,6 +128,20 @@ return [
                 'private' => '私密',
             ],
         ],
+        'comment' => [
+            'author' => '评论者',
+            'post' => '所属动态',
+            'parent' => '父评论',
+            'content' => '评论内容',
+            'like_count' => '点赞数',
+        ],
+        'comment' => [
+            'author' => '评论者',
+            'post' => '动态',
+            'parent' => '父评论',
+            'content' => '评论内容',
+            'like_count' => '点赞数',
+        ],
         'pet_record_type' => [
             'name' => '名称',
             'slug' => '标识',
@@ -191,6 +206,12 @@ return [
         ],
         'pet' => [
             'name' => '宠物',
+            'sub_groups' => [
+                'management' => '宠物资料',
+                'medical' => '健康档案',
+                'content' => '内容动态',
+                'config' => '基础配置',
+            ],
         ],
     ],
 
@@ -252,6 +273,14 @@ return [
         'post' => [
             'label' => '动态',
             'plural_label' => '动态',
+        ],
+        'comment' => [
+            'label' => '评论',
+            'plural_label' => '评论',
+        ],
+        'comment' => [
+            'label' => '评论',
+            'plural_label' => '评论',
         ],
     ],
 
