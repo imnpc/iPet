@@ -38,6 +38,7 @@ return new class extends Migration
         }
 
         Schema::table('pet_records', function (Blueprint $table) {
+            $table->dropIndex('pet_records_pet_id_type_index');
             $table->dropColumn('type');
         });
     }
@@ -57,6 +58,10 @@ return new class extends Migration
                 DB::table('pet_records')->where('id', $record->id)->update(['type' => $typeSlugs[$record->pet_record_type_id]]);
             }
         }
+
+        Schema::table('pet_records', function (Blueprint $table) {
+            $table->index(['pet_id', 'type']);
+        });
 
         Schema::table('pet_records', function (Blueprint $table) {
             $table->dropForeign(['pet_record_type_id']);
