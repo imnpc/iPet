@@ -61,19 +61,19 @@
             <div>
                 <label class="ui-label">可见性</label>
                 <div class="grid grid-cols-3 gap-3">
-                    <label class="relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-warm-200 cursor-pointer hover:border-primary-300 hover:bg-primary-50 transition-all duration-200">
+                    <label data-visibility-card class="relative flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all duration-200 {{ old('visibility', 'public') === 'public' ? 'border-primary-300 bg-primary-50' : 'border-warm-200 hover:border-primary-300 hover:bg-primary-50' }}">
                         <input type="radio" name="visibility" value="public" {{ old('visibility', 'public') === 'public' ? 'checked' : '' }} class="sr-only">
-                        <svg class="w-6 h-6 text-warm-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <svg data-visibility-icon class="h-6 w-6 {{ old('visibility', 'public') === 'public' ? 'text-primary-500' : 'text-warm-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <span class="text-sm font-medium text-warm-700">公开</span>
                     </label>
-                    <label class="relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-warm-200 cursor-pointer hover:border-primary-300 hover:bg-primary-50 transition-all duration-200">
+                    <label data-visibility-card class="relative flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all duration-200 {{ old('visibility') === 'followers' ? 'border-primary-300 bg-primary-50' : 'border-warm-200 hover:border-primary-300 hover:bg-primary-50' }}">
                         <input type="radio" name="visibility" value="followers" {{ old('visibility') === 'followers' ? 'checked' : '' }} class="sr-only">
-                        <svg class="w-6 h-6 text-warm-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <svg data-visibility-icon class="h-6 w-6 {{ old('visibility') === 'followers' ? 'text-primary-500' : 'text-warm-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         <span class="text-sm font-medium text-warm-700">粉丝可见</span>
                     </label>
-                    <label class="relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-warm-200 cursor-pointer hover:border-primary-300 hover:bg-primary-50 transition-all duration-200">
+                    <label data-visibility-card class="relative flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all duration-200 {{ old('visibility') === 'private' ? 'border-primary-300 bg-primary-50' : 'border-warm-200 hover:border-primary-300 hover:bg-primary-50' }}">
                         <input type="radio" name="visibility" value="private" {{ old('visibility') === 'private' ? 'checked' : '' }} class="sr-only">
-                        <svg class="w-6 h-6 text-warm-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <svg data-visibility-icon class="h-6 w-6 {{ old('visibility') === 'private' ? 'text-primary-500' : 'text-warm-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         <span class="text-sm font-medium text-warm-700">仅自己</span>
                     </label>
                 </div>
@@ -123,6 +123,23 @@
     let imageFiles = [];
     let videoFiles = [];
     let dragImageIndex = null;
+
+    function syncVisibilityCards() {
+        document.querySelectorAll('[data-visibility-card]').forEach((card) => {
+            const input = card.querySelector('input[name="visibility"]');
+            const icon = card.querySelector('[data-visibility-icon]');
+            const isChecked = input?.checked === true;
+
+            card.classList.toggle('border-primary-300', isChecked);
+            card.classList.toggle('bg-primary-50', isChecked);
+            card.classList.toggle('border-warm-200', !isChecked);
+
+            if (icon) {
+                icon.classList.toggle('text-primary-500', isChecked);
+                icon.classList.toggle('text-warm-400', !isChecked);
+            }
+        });
+    }
 
     function clearError(el) {
         el.textContent = '';
@@ -202,9 +219,17 @@
             img.className = 'h-full w-full object-cover';
             img.src = item.preview;
 
+            const typeBadge = document.createElement('span');
+            typeBadge.className = 'pointer-events-none absolute left-2 top-2 z-10 inline-flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 text-[11px] text-white';
+            typeBadge.innerHTML = '<svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>图片';
+
             const indexBadge = document.createElement('span');
             indexBadge.className = 'absolute left-2 top-2 rounded bg-black/65 px-2 py-0.5 text-xs text-white';
             indexBadge.textContent = '#' + (index + 1);
+
+            const dragHint = document.createElement('span');
+            dragHint.className = 'pointer-events-none absolute left-2 bottom-2 inline-flex items-center gap-1 rounded bg-warm-200/90 px-1.5 py-1 text-[11px] text-warm-700';
+            dragHint.innerHTML = '<svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 15h8"></path></svg>拖拽';
 
             const button = document.createElement('button');
             button.type = 'button';
@@ -213,7 +238,9 @@
             button.addEventListener('click', () => removeImage(index));
 
             wrapper.appendChild(img);
+            wrapper.appendChild(typeBadge);
             wrapper.appendChild(indexBadge);
+            wrapper.appendChild(dragHint);
             wrapper.appendChild(button);
             imagePreview.appendChild(wrapper);
         });
@@ -256,6 +283,10 @@
             const cover = document.createElement('div');
             cover.className = 'relative aspect-video bg-warm-200';
 
+            const typeBadge = document.createElement('span');
+            typeBadge.className = 'pointer-events-none absolute left-2 top-2 z-10 inline-flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 text-[11px] text-white';
+            typeBadge.innerHTML = '<svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>视频';
+
             if (item.thumbnail) {
                 const img = document.createElement('img');
                 img.src = item.thumbnail;
@@ -267,6 +298,7 @@
             play.className = 'absolute inset-0 flex items-center justify-center';
             play.innerHTML = '<div class="w-10 h-10 rounded-full bg-black/45 flex items-center justify-center"><svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>';
             cover.appendChild(play);
+            cover.appendChild(typeBadge);
 
             const meta = document.createElement('div');
             meta.className = 'flex items-center justify-between gap-2 px-3 py-2 text-xs text-warm-700';
@@ -336,5 +368,11 @@
         syncInputFiles(videoInput, videoFiles);
         renderVideoPreview();
     });
+
+    document.querySelectorAll('input[name="visibility"]').forEach((input) => {
+        input.addEventListener('change', syncVisibilityCards);
+    });
+
+    syncVisibilityCards();
 </script>
 @endsection
