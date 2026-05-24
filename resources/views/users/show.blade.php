@@ -107,7 +107,7 @@
                     @endif
 
                     <div class="mt-3 flex items-center justify-between text-xs text-warm-500">
-                        <span>{{ $post->published_at?->diffForHumans() }}</span>
+                        <span>{{ $post->published_at?->format('Y年m月d日 H:i') ?? '未发布' }}</span>
                         <span>评论 {{ $post->comment_count }} · 点赞 {{ $post->like_count }}</span>
                     </div>
                 </a>

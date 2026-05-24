@@ -26,7 +26,7 @@
             @endif
             <span class="inline-flex items-center rounded-full bg-accent-50 px-2.5 py-1 text-xs font-semibold text-accent-700">{{ $speciesLabel }}</span>
         </div>
-        <p class="mt-1 text-sm text-warm-400">主人 {{ $post->user->name }} · {{ $post->created_at->diffForHumans() }}</p>
+        <p class="mt-1 text-sm text-warm-400">主人 {{ $post->user->name }} · {{ $post->published_at?->format('Y年m月d日 H:i') ?? '未发布' }}</p>
     </div>
 
     <div class="flex items-center gap-2">

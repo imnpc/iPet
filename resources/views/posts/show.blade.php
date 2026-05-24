@@ -125,7 +125,7 @@
                     <h3 class="relative mb-3 text-sm font-bold text-warm-900">动态信息</h3>
                     <ul class="space-y-2 text-xs text-warm-500">
                         <li>· 物种：{{ $speciesLabel }}</li>
-                        <li>· 发布时间：{{ $post->created_at->diffForHumans() }}</li>
+                        <li>· 发布时间：{{ $post->published_at?->format('Y年m月d日 H:i') ?? '未发布' }}</li>
                         <li>· 评论数：{{ $post->comment_count }}</li>
                     </ul>
                 </div>

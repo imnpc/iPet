@@ -33,8 +33,8 @@
 
             <div class="ml-auto flex items-center gap-2">
                 @auth
-                    <div class="relative group">
-                        <button class="flex items-center gap-2 rounded-xl p-1.5 hover:bg-warm-100 transition-colors">
+                    <details class="relative">
+                        <summary class="flex cursor-pointer list-none items-center gap-2 rounded-xl p-1.5 hover:bg-warm-100 transition-colors">
                             <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 text-primary-600 ring-2 ring-primary-200/50">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -42,8 +42,8 @@
                             </div>
                             <span class="hidden text-sm font-semibold text-warm-700 sm:block">{{ auth()->user()->name }}</span>
                             <svg class="h-4 w-4 text-warm-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div class="invisible absolute right-0 mt-2 w-48 rounded-xl border border-warm-100 bg-white py-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                        </summary>
+                        <div class="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-warm-100 bg-white py-2 shadow-xl">
                             <a href="{{ route('pets.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-warm-700 hover:bg-warm-50">
                                 <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4.5 9.5a2 2 0 110-4 2 2 0 010 4zM9 7a2 2 0 110-4 2 2 0 010 4zM15 7a2 2 0 110-4 2 2 0 010 4zM19.5 9.5a2 2 0 110-4 2 2 0 010 4zM6 14c0 2.5 2 4.5 6 4.5s6-2 6-4.5c0-1.5-1-2.5-2-3-1-.5-2.5-.5-4-.5s-3 0-4 .5c-1 .5-2 1.5-2 3z"/></svg>
                                 我的宠物
@@ -61,7 +61,7 @@
                                 </button>
                             </form>
                         </div>
-                    </div>
+                    </details>
                 @else
                     <a href="{{ route('login') }}" class="px-3 py-2 text-sm font-semibold text-warm-600 hover:text-primary-600">登录</a>
                     <a href="{{ route('register') }}" class="rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white hover:bg-primary-700">注册</a>
