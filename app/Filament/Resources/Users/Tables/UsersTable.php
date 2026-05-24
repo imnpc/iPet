@@ -44,10 +44,10 @@ class UsersTable
                 TextColumn::make('email')
                     ->label(trans('filament-model.general.email'))
                     ->searchable(),
-                PhoneColumn::make('mobile')
-                    ->label(trans('filament-model.general.mobile'))
-                    ->displayFormat(PhoneInputNumberType::NATIONAL)
-                    ->searchable(),
+                //                PhoneColumn::make('mobile')
+                //                    ->label(trans('filament-model.general.mobile'))
+                //                    ->displayFormat(PhoneInputNumberType::NATIONAL)
+                //                    ->searchable(),
                 TextColumn::make('parent_id')
                     ->label(trans('filament-model.general.parent_id')),
                 ImageColumn::make('avatar_url')
