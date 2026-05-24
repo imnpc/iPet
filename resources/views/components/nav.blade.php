@@ -18,10 +18,10 @@
             </div>
 
             <div class="hidden items-center gap-1 md:flex">
-                <a href="{{ route('posts.index') }}" @class([
+                <a href="{{ route('home') }}" @class([
                     'rounded-lg px-3 py-2 text-sm font-semibold transition-colors',
-                    'bg-primary-50 text-primary-700' => request()->routeIs('posts.index', 'posts.show'),
-                    'text-warm-600 hover:bg-warm-100 hover:text-primary-700' => !request()->routeIs('posts.index', 'posts.show'),
+                    'bg-primary-50 text-primary-700' => request()->routeIs('home', 'posts.index', 'posts.show'),
+                    'text-warm-600 hover:bg-warm-100 hover:text-primary-700' => !request()->routeIs('home', 'posts.index', 'posts.show'),
                 ])>首页</a>
                 <a href="{{ route('pets.index') }}" @class([
                     'rounded-lg px-3 py-2 text-sm font-semibold transition-colors',
@@ -70,10 +70,10 @@
         </div>
 
         <div class="flex items-center gap-1 pb-2 md:hidden">
-            <a href="{{ route('posts.index') }}" @class([
+            <a href="{{ route('home') }}" @class([
                 'flex-1 rounded-lg px-3 py-2 text-center text-xs font-semibold',
-                'bg-primary-50 text-primary-700' => request()->routeIs('posts.index', 'posts.show'),
-                'text-warm-600 bg-warm-100' => !request()->routeIs('posts.index', 'posts.show'),
+                'bg-primary-50 text-primary-700' => request()->routeIs('home', 'posts.index', 'posts.show'),
+                'text-warm-600 bg-warm-100' => !request()->routeIs('home', 'posts.index', 'posts.show'),
             ])>首页</a>
             <a href="{{ route('pets.index') }}" @class([
                 'flex-1 rounded-lg px-3 py-2 text-center text-xs font-semibold',
